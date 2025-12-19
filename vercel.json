@@ -12,17 +12,14 @@
       "use": "@vercel/static"
     }
   ],
-  "routes": [
+  "rewrites": [
     {
-      "src": "/api/(.*)",
-      "dest": "/api/$1"
+      "source": "/api/(.*)",
+      "destination": "/api/$1"
     },
     {
-      "src": "/(.*)",
-      "dest": "/public/$1",
-      "headers": {
-        "Cache-Control": "public, max-age=0, must-revalidate"
-      }
+      "source": "/(.*)",
+      "destination": "/public/$1"
     }
   ],
   "headers": [
@@ -40,18 +37,10 @@
         {
           "key": "X-XSS-Protection",
           "value": "1; mode=block"
-        },
-        {
-          "key": "Referrer-Policy",
-          "value": "origin-when-cross-origin"
         }
       ]
     }
   ],
-  "env": {
-    "NODE_ENV": "production"
-  },
-  "github": {
-    "enabled": false
-  }
+  "cleanUrls": true,
+  "trailingSlash": false
 }

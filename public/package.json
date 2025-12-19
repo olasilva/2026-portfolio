@@ -1,0 +1,21 @@
+{
+  "name": "silva-ola-3d-portfolio",
+  "version": "2.0.0",
+  "description": "Advanced 3D Portfolio Website",
+  "main": "index.html",
+  "scripts": {
+    "start": "live-server --port=3000",
+    "build": "echo 'Build complete'",
+    "deploy": "gh-pages -d ."
+  },
+  "dependencies": {
+    "three": "^0.128.0",
+    "typed.js": "^2.1.0",
+    "aos": "^2.3.1",
+    "particles.js": "^2.0.0"
+  },
+  "devDependencies": {
+    "live-server": "^1.2.2",
+    "gh-pages": "^5.0.0"
+  }
+}

@@ -1,0 +1,733 @@
+<!DOCTYPE html>
+<html lang="en" class="sr">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SILVA OLA | NEON CYBERPUNK PORTFOLIO</title>
+    
+    <!-- Futuristic Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;500;600;700&family=Exo+2:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <!-- Advanced 3D Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/EffectComposer.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/RenderPass.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/UnrealBloomPass.js"></script>
+    
+    <!-- Advanced UI Libraries -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    
+    <!-- Icons & Particles -->
+    <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="style.css">
+    
+    <!-- FAVICON -->
+    <link rel="icon" type="image/x-icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🚀</text></svg>">
+</head>
+<body class="cyber-theme">
+    <!-- Matrix Rain Background -->
+    <canvas id="matrixCanvas"></canvas>
+    
+    <!-- 3D Neural Network Background -->
+    <canvas id="neuralNetwork"></canvas>
+    
+    <!-- Main Container -->
+    <div class="cyber-container">
+        
+        <!-- FLOATING NEON HEADER -->
+        <header class="cyber-header">
+            <div class="header-grid">
+                <!-- Left Logo -->
+                <div class="logo-container">
+                    <div class="neon-logo">
+                        <span class="logo-text" data-text="SILVA">SILVA</span>
+                        <span class="logo-subtext">LEKE</span>
+                        <div class="logo-pulse"></div>
+                    </div>
+                </div>
+                
+                <!-- Center Navigation -->
+                <nav class="hologram-nav">
+                    <div class="nav-grid">
+                        <a href="#hero" class="nav-item" data-aos="fade-down" data-aos-delay="100">
+                            <div class="nav-icon">🏠</div>
+                            <span class="nav-label">HOME</span>
+                            <div class="nav-glow"></div>
+                        </a>
+                        <a href="#about" class="nav-item" data-aos="fade-down" data-aos-delay="200">
+                            <div class="nav-icon">👤</div>
+                            <span class="nav-label">ABOUT</span>
+                            <div class="nav-glow"></div>
+                        </a>
+                        <a href="#skills" class="nav-item" data-aos="fade-down" data-aos-delay="300">
+                            <div class="nav-icon">⚡</div>
+                            <span class="nav-label">SKILLS</span>
+                            <div class="nav-glow"></div>
+                        </a>
+                        <a href="#projects" class="nav-item" data-aos="fade-down" data-aos-delay="400">
+                            <div class="nav-icon">💼</div>
+                            <span class="nav-label">PROJECTS</span>
+                            <div class="nav-glow"></div>
+                        </a>
+                        <a href="#contact" class="nav-item" data-aos="fade-down" data-aos-delay="500">
+                            <div class="nav-icon">📱</div>
+                            <span class="nav-label">CONTACT</span>
+                            <div class="nav-glow"></div>
+                        </a>
+                    </div>
+                </nav>
+                
+                <!-- Right Controls -->
+                <div class="header-controls">
+                    <button class="cyber-btn theme-toggle" id="themeToggle">
+                        <span class="btn-text">THEME</span>
+                        <div class="btn-icon">🌓</div>
+                        <div class="btn-glow"></div>
+                    </button>
+                    
+                    <button class="cyber-btn audio-toggle" id="audioToggle">
+                        <span class="btn-text">AUDIO</span>
+                        <div class="btn-icon">🎵</div>
+                        <div class="btn-glow"></div>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Scan Line -->
+            <div class="scan-line"></div>
+        </header>
+        
+        <!-- TERMINAL HERO SECTION -->
+        <section class="cyber-hero" id="hero">
+            <div class="hero-grid">
+                <!-- Left Content -->
+                <div class="hero-content" data-aos="fade-right" data-aos-duration="1500">
+                    <div class="terminal-window">
+                        <div class="terminal-header">
+                            <div class="terminal-dots">
+                                <span class="dot red"></span>
+                                <span class="dot yellow"></span>
+                                <span class="dot green"></span>
+                            </div>
+                            <span class="terminal-title">terminal@silva:~</span>
+                        </div>
+                        <div class="terminal-body">
+                            <div class="terminal-line">
+                                <span class="prompt">$</span>
+                                <span class="command">whoami</span>
+                            </div>
+                            <div class="terminal-output">
+                                <span class="output-text">SILVA OLA</span>
+                            </div>
+                            <div class="terminal-line">
+                                <span class="prompt">$</span>
+                                <span class="command">cat about.txt</span>
+                            </div>
+                            <div class="terminal-output">
+                                <span class="output-text">
+                                    > FULL-STACK DEVELOPER<br>
+                                    > AI/ML ENGINEER<br>
+                                    > 3D WEB SPECIALIST<br>
+                                    > TECH INNOVATOR
+                                </span>
+                            </div>
+                            <div class="terminal-line typing">
+                                <span class="prompt">$</span>
+                                <span class="command" id="typingCommand"></span>
+                                <span class="cursor">▋</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="hero-stats">
+                        <div class="stat-card" data-aos="zoom-in" data-aos-delay="300">
+                            <div class="stat-number" data-count="150">0</div>
+                            <div class="stat-label">PROJECTS</div>
+                            <div class="stat-glow"></div>
+                        </div>
+                        <div class="stat-card" data-aos="zoom-in" data-aos-delay="400">
+                            <div class="stat-number" data-count="25">0</div>
+                            <div class="stat-label">TECH STACK</div>
+                            <div class="stat-glow"></div>
+                        </div>
+                        <div class="stat-card" data-aos="zoom-in" data-aos-delay="500">
+                            <div class="stat-number" data-count="5">0</div>
+                            <div class="stat-label">YEARS EXP</div>
+                            <div class="stat-glow"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Right Hologram -->
+                <div class="hero-hologram" data-aos="fade-left" data-aos-duration="2000">
+                    <div class="hologram-container">
+                        <div class="hologram-base">
+                            <div class="base-glow"></div>
+                        </div>
+                        <div class="hologram-image">
+                            <img src="img/dadddySilva.jpg" alt="Silva Ola Hologram" class="hologram-img">
+                            <div class="hologram-grid"></div>
+                            <div class="hologram-scan"></div>
+                        </div>
+                        <div class="hologram-data">
+                            <div class="data-stream">
+                                <span>01001000 01101001 01110010 01100101 00100000 01001101 01100101</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- CTA Buttons -->
+            <div class="hero-cta" data-aos="fade-up" data-aos-delay="600">
+                <a href="#projects" class="cyber-btn primary-btn">
+                    <span class="btn-text">EXPLORE WORK</span>
+                    <div class="btn-icon">🚀</div>
+                    <div class="btn-glow"></div>
+                </a>
+                <a href="#contact" class="cyber-btn outline-btn">
+                    <span class="btn-text">CONNECT NOW</span>
+                    <div class="btn-icon">⚡</div>
+                    <div class="btn-glow"></div>
+                </a>
+            </div>
+            
+            <!-- Scroll Indicator -->
+            <div class="cyber-scroll" data-aos="fade-up" data-aos-delay="700">
+                <div class="scroll-text">SCROLL TO UNLOCK</div>
+                <div class="scroll-arrow">▼</div>
+                <div class="scroll-pulse"></div>
+            </div>
+        </section>
+        
+        <!-- ABOUT SECTION WITH NEURAL NETWORK -->
+        <section class="cyber-about" id="about">
+            <div class="section-header" data-aos="fade-up">
+                <h2 class="section-title">
+                    <span class="title-text">ABOUT_</span>
+                    <span class="title-highlight">ME.EXE</span>
+                </h2>
+                <div class="section-subtitle">INITIALIZING PERSONAL PROTOCOL...</div>
+            </div>
+            
+            <div class="about-grid">
+                <!-- Left Timeline -->
+                <div class="timeline-container" data-aos="fade-right">
+                    <div class="timeline-line">
+                        <div class="timeline-node" data-year="2019">
+                            <div class="node-glow"></div>
+                            <div class="node-content">
+                                <h3>BEGIN JOURNEY</h3>
+                                <p>Started coding with Python & Java</p>
+                            </div>
+                        </div>
+                        <div class="timeline-node" data-year="2020">
+                            <div class="node-glow"></div>
+                            <div class="node-content">
+                                <h3>WEB MASTERY</h3>
+                                <p>Mastered Full-Stack Development</p>
+                            </div>
+                        </div>
+                        <div class="timeline-node" data-year="2021">
+                            <div class="node-glow"></div>
+                            <div class="node-content">
+                                <h3>AI SPECIALIZATION</h3>
+                                <p>Dived into Machine Learning & AI</p>
+                            </div>
+                        </div>
+                        <div class="timeline-node" data-year="2022">
+                            <div class="node-glow"></div>
+                            <div class="node-content">
+                                <h3>3D IMMERSION</h3>
+                                <p>Explored Three.js & WebGL</p>
+                            </div>
+                        </div>
+                        <div class="timeline-node" data-year="2023">
+                            <div class="node-glow"></div>
+                            <div class="node-content">
+                                <h3>TECH LEAD</h3>
+                                <p>Led complex projects & teams</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Center Bio -->
+                <div class="bio-container" data-aos="zoom-in" data-aos-delay="300">
+                    <div class="bio-card">
+                        <div class="card-header">
+                            <h3>SYSTEM OVERVIEW</h3>
+                            <div class="card-status">
+                                <span class="status-dot online"></span>
+                                <span class="status-text">ONLINE</span>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <p class="bio-text">
+                                <span class="highlight">INNOVATIVE DEVELOPER</span> with expertise across multiple tech domains. 
+                                Combining <span class="highlight">CUTTING-EDGE TECHNOLOGY</span> with creative problem-solving 
+                                to build <span class="highlight">EXCEPTIONAL DIGITAL EXPERIENCES</span>.
+                            </p>
+                            
+                            <div class="bio-stats">
+                                <div class="stat-meter">
+                                    <div class="meter-label">CREATIVITY</div>
+                                    <div class="meter-bar" data-value="95"></div>
+                                </div>
+                                <div class="stat-meter">
+                                    <div class="meter-label">TECH SKILLS</div>
+                                    <div class="meter-bar" data-value="98"></div>
+                                </div>
+                                <div class="stat-meter">
+                                    <div class="meter-label">PROBLEM SOLVING</div>
+                                    <div class="meter-bar" data-value="96"></div>
+                                </div>
+                                <div class="stat-meter">
+                                    <div class="meter-label">INNOVATION</div>
+                                    <div class="meter-bar" data-value="94"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Right Tech -->
+                <div class="tech-container" data-aos="fade-left">
+                    <div class="tech-grid">
+                        <div class="tech-item" data-tech="AI/ML">
+                            <div class="tech-icon">🧠</div>
+                            <div class="tech-label">AI/ML</div>
+                        </div>
+                        <div class="tech-item" data-tech="WEB3">
+                            <div class="tech-icon">🔗</div>
+                            <div class="tech-label">WEB3</div>
+                        </div>
+                        <div class="tech-item" data-tech="3D">
+                            <div class="tech-icon">🎮</div>
+                            <div class="tech-label">3D WEB</div>
+                        </div>
+                        <div class="tech-item" data-tech="CLOUD">
+                            <div class="tech-icon">☁️</div>
+                            <div class="tech-label">CLOUD</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- SKILLS MATRIX SECTION -->
+        <section class="cyber-skills" id="skills">
+            <div class="section-header" data-aos="fade-up">
+                <h2 class="section-title">
+                    <span class="title-text">SKILLS_</span>
+                    <span class="title-highlight">MATRIX</span>
+                </h2>
+                <div class="section-subtitle">TECHNOLOGICAL ARSENAL LOADED...</div>
+            </div>
+            
+            <div class="skills-matrix">
+                <!-- Matrix Grid -->
+                <div class="matrix-grid" data-aos="zoom-in">
+                    <div class="matrix-cell" data-skill="REACT">
+                        <div class="cell-content">
+                            <div class="skill-icon">⚛️</div>
+                            <div class="skill-name">REACT</div>
+                            <div class="skill-level">EXPERT</div>
+                        </div>
+                        <div class="cell-glow"></div>
+                    </div>
+                    <div class="matrix-cell" data-skill="PYTHON">
+                        <div class="cell-content">
+                            <div class="skill-icon">🐍</div>
+                            <div class="skill-name">PYTHON</div>
+                            <div class="skill-level">MASTER</div>
+                        </div>
+                        <div class="cell-glow"></div>
+                    </div>
+                    <div class="matrix-cell" data-skill="THREEJS">
+                        <div class="cell-content">
+                            <div class="skill-icon">🎯</div>
+                            <div class="skill-name">THREE.JS</div>
+                            <div class="skill-level">ADVANCED</div>
+                        </div>
+                        <div class="cell-glow"></div>
+                    </div>
+                    <div class="matrix-cell" data-skill="TENSORFLOW">
+                        <div class="cell-content">
+                            <div class="skill-icon">🤖</div>
+                            <div class="skill-name">TENSORFLOW</div>
+                            <div class="skill-level">EXPERT</div>
+                        </div>
+                        <div class="cell-glow"></div>
+                    </div>
+                    <div class="matrix-cell" data-skill="NODEJS">
+                        <div class="cell-content">
+                            <div class="skill-icon">🟢</div>
+                            <div class="skill-name">NODE.JS</div>
+                            <div class="skill-level">EXPERT</div>
+                        </div>
+                        <div class="cell-glow"></div>
+                    </div>
+                    <div class="matrix-cell" data-skill="WEBGL">
+                        <div class="cell-content">
+                            <div class="skill-icon">✨</div>
+                            <div class="skill-name">WEBGL</div>
+                            <div class="skill-level">ADVANCED</div>
+                        </div>
+                        <div class="cell-glow"></div>
+                    </div>
+                    <div class="matrix-cell" data-skill="AWS">
+                        <div class="cell-content">
+                            <div class="skill-icon">☁️</div>
+                            <div class="skill-name">AWS</div>
+                            <div class="skill-level">INTERMEDIATE</div>
+                        </div>
+                        <div class="cell-glow"></div>
+                    </div>
+                    <div class="matrix-cell" data-skill="DOCKER">
+                        <div class="cell-content">
+                            <div class="skill-icon">🐳</div>
+                            <div class="skill-name">DOCKER</div>
+                            <div class="skill-level">ADVANCED</div>
+                        </div>
+                        <div class="cell-glow"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- PROJECTS HOLO-DECK -->
+        <section class="cyber-projects" id="projects">
+            <div class="section-header" data-aos="fade-up">
+                <h2 class="section-title">
+                    <span class="title-text">PROJECTS_</span>
+                    <span class="title-highlight">HOLODECK</span>
+                </h2>
+                <div class="section-subtitle">ACCESSING PROJECT ARCHIVES...</div>
+            </div>
+            
+            <div class="projects-deck">
+                <!-- Project 1 -->
+                <div class="project-hologram" data-aos="flip-left" data-aos-delay="100">
+                    <div class="hologram-frame">
+                        <div class="frame-header">
+                            <h3>AI CHAT SYSTEM</h3>
+                            <div class="frame-tags">
+                                <span class="tag">AI</span>
+                                <span class="tag">NLP</span>
+                                <span class="tag">RASA</span>
+                            </div>
+                        </div>
+                        <div class="frame-content">
+                            <div class="project-preview">
+                                <img src="img/aii.jpg" alt="AI Chat System">
+                                <div class="preview-overlay">
+                                    <div class="overlay-text">LIVE DEMO</div>
+                                </div>
+                            </div>
+                            <p class="project-desc">
+                                Intelligent chatbot using Rasa framework with natural language processing capabilities.
+                            </p>
+                            <div class="project-tech">
+                                <span class="tech-badge">Python</span>
+                                <span class="tech-badge">TensorFlow</span>
+                                <span class="tech-badge">NLP</span>
+                            </div>
+                        </div>
+                        <div class="frame-actions">
+                            <a href="https://github.com/olasilva" class="hologram-btn" target="_blank">
+                                <span>VIEW CODE</span>
+                                <div class="btn-trail"></div>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Project 2 -->
+                <div class="project-hologram" data-aos="flip-left" data-aos-delay="200">
+                    <div class="hologram-frame">
+                        <div class="frame-header">
+                            <h3>SECURE PASSWORD GEN</h3>
+                            <div class="frame-tags">
+                                <span class="tag">SECURITY</span>
+                                <span class="tag">CRYPTO</span>
+                                <span class="tag">WEB</span>
+                            </div>
+                        </div>
+                        <div class="frame-content">
+                            <div class="project-preview">
+                                <img src="img/password generator.jpg" alt="Password Generator">
+                                <div class="preview-overlay">
+                                    <div class="overlay-text">SECURE</div>
+                                </div>
+                            </div>
+                            <p class="project-desc">
+                                Advanced password generation system with military-grade encryption algorithms.
+                            </p>
+                            <div class="project-tech">
+                                <span class="tech-badge">JavaScript</span>
+                                <span class="tech-badge">Crypto API</span>
+                                <span class="tech-badge">React</span>
+                            </div>
+                        </div>
+                        <div class="frame-actions">
+                            <a href="https://github.com/olasilva" class="hologram-btn" target="_blank">
+                                <span>VIEW CODE</span>
+                                <div class="btn-trail"></div>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Project 3 -->
+                <div class="project-hologram" data-aos="flip-left" data-aos-delay="300">
+                    <div class="hologram-frame">
+                        <div class="frame-header">
+                            <h3>CONTRACTOR CONNECT</h3>
+                            <div class="frame-tags">
+                                <span class="tag">PLATFORM</span>
+                                <span class="tag">E-COMMERCE</span>
+                                <span class="tag">FULL-STACK</span>
+                            </div>
+                        </div>
+                        <div class="frame-content">
+                            <div class="project-preview">
+                                <img src="img/contractor.jpg" alt="Contractor Platform">
+                                <div class="preview-overlay">
+                                    <div class="overlay-text">MULTI-USER</div>
+                                </div>
+                            </div>
+                            <p class="project-desc">
+                                Platform connecting investors with construction contractors across Nigeria.
+                            </p>
+                            <div class="project-tech">
+                                <span class="tech-badge">MERN Stack</span>
+                                <span class="tech-badge">MongoDB</span>
+                                <span class="tech-badge">Express</span>
+                            </div>
+                        </div>
+                        <div class="frame-actions">
+                            <a href="https://github.com/olasilva" class="hologram-btn" target="_blank">
+                                <span>VIEW CODE</span>
+                                <div class="btn-trail"></div>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- CONTACT TERMINAL -->
+        <!-- CONTACT TERMINAL -->
+<section class="cyber-contact" id="contact">
+    <div class="section-header" data-aos="fade-up">
+        <h2 class="section-title">
+            <span class="title-text">CONTACT_</span>
+            <span class="title-highlight">TERMINAL</span>
+        </h2>
+        <div class="section-subtitle">INITIATING CONNECTION PROTOCOL...</div>
+    </div>
+    
+    <div class="contact-terminal">
+        <div class="terminal-container">
+            <!-- Left Contact Info -->
+            <div class="contact-info" data-aos="fade-right">
+                <div class="info-panel">
+                    <h3 class="panel-title">CONNECTION POINTS</h3>
+                    <div class="connection-item">
+                        <div class="connection-icon">📧</div>
+                        <div class="connection-details">
+                            <h4>EMAIL TRANSMISSION</h4>
+                            <p>olasilvaolunleke@gmail.com</p>
+                        </div>
+                    </div>
+                    <div class="connection-item">
+                        <div class="connection-icon">📱</div>
+                        <div class="connection-details">
+                            <h4>SIGNAL FREQUENCY</h4>
+                            <p>+234 813 631 9393</p>
+                        </div>
+                    </div>
+                    <div class="connection-item">
+                        <div class="connection-icon">📍</div>
+                        <div class="connection-details">
+                            <h4>LOCATION GRID</h4>
+                            <p>F.C.T, Nigeria</p>
+                        </div>
+                    </div>
+                    <div class="connection-item">
+                        <div class="connection-icon">🕒</div>
+                        <div class="connection-details">
+                            <h4>RESPONSE TIME</h4>
+                            <p> 24 hours</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Transmission Status -->
+                <div class="transmission-status">
+                    <h4>TRANSMISSION STATUS</h4>
+                    <div class="status-indicators">
+                        <div class="status-item active">
+                            <div class="status-dot"></div>
+                            <span>SERVER ONLINE</span>
+                        </div>
+                        <div class="status-item">
+                            <div class="status-dot" id="emailStatus"></div>
+                            <span>EMAIL SYSTEM</span>
+                        </div>
+                        <div class="status-item">
+                            <div class="status-dot" id="connectionStatus"></div>
+                            <span>DATABASE LINK</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Right Form -->
+            <div class="contact-form" data-aos="fade-left">
+                <form id="cyberForm" class="cyber-form">
+                    <div class="form-group">
+                        <label class="form-label">IDENTIFICATION</label>
+                        <input type="text" id="name" class="form-input" placeholder="ENTER YOUR NAME" required>
+                        <div class="input-glow"></div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">TRANSMISSION FREQUENCY</label>
+                        <input type="email" id="email" class="form-input" placeholder="ENTER YOUR EMAIL" required>
+                        <div class="input-glow"></div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">COMMUNICATION CHANNEL</label>
+                        <input type="tel" id="phone" class="form-input" placeholder="OPTIONAL PHONE">
+                        <div class="input-glow"></div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">MESSAGE ENCRYPTION</label>
+                        <textarea id="message" class="form-textarea" placeholder="ENTER YOUR MESSAGE" rows="4" required></textarea>
+                        <div class="input-glow"></div>
+                    </div>
+                    
+                    <!-- Submission Feedback -->
+                    <div id="transmissionFeedback" class="transmission-feedback" style="display: none;">
+                        <div class="feedback-content">
+                            <div class="feedback-icon">📡</div>
+                            <div class="feedback-text">
+                                <span id="feedbackMessage"></span>
+                                <div class="progress-bar">
+                                    <div class="progress-fill"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <button type="submit" class="cyber-btn transmit-btn" id="submitBtn">
+                        <span class="btn-text">INITIATE TRANSMISSION</span>
+                        <div class="btn-icon">📡</div>
+                        <div class="btn-glow"></div>
+                        <div class="btn-pulse"></div>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+        <!-- FOOTER -->
+        <footer class="cyber-footer">
+            <div class="footer-grid">
+                <!-- Left Logo -->
+                <div class="footer-logo">
+                    <div class="footer-neon">
+                        <span class="neon-text">SILVA</span>
+                        <span class="neon-subtext">TECHNOLOGIES</span>
+                    </div>
+                    <p class="footer-tagline">Pushing Digital Boundaries Since 2019</p>
+                </div>
+                
+                <!-- Center Links -->
+                <div class="footer-links">
+                    <div class="link-group">
+                        <h4 class="link-title">NAVIGATION</h4>
+                        <a href="#hero" class="footer-link">Home</a>
+                        <a href="#about" class="footer-link">About</a>
+                        <a href="#skills" class="footer-link">Skills</a>
+                        <a href="#projects" class="footer-link">Projects</a>
+                        <a href="#contact" class="footer-link">Contact</a>
+                    </div>
+                    <div class="link-group">
+                        <h4 class="link-title">SOCIAL GRID</h4>
+                        <a href="https://github.com/olasilva" class="footer-link" target="_blank">GitHub</a>
+                        <a href="https://www.linkedin.com/in/silva-ola-bbb1b4276" class="footer-link" target="_blank">LinkedIn</a>
+                        <a href="https://twitter.com/OlaSilv94360217" class="footer-link" target="_blank">Twitter</a>
+                        <a href="https://www.instagram.com/olasilvaolunleke" class="footer-link" target="_blank">Instagram</a>
+                    </div>
+                </div>
+                
+                <!-- Right Status -->
+                <div class="footer-status">
+                    <div class="status-card">
+                        <div class="status-header">
+                            <h4>SYSTEM STATUS</h4>
+                            <div class="status-indicator">
+                                <div class="indicator-dot active"></div>
+                                <span>ONLINE</span>
+                            </div>
+                        </div>
+                        <div class="status-info">
+                            <p>LAST UPDATED: <span id="currentTime"></span></p>
+                            <p>RESPONSE: <span class="response-good">ACTIVE</span></p>
+                            <p>SECURITY: <span class="security-good">ENCRYPTED</span></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Footer Bottom -->
+            <div class="footer-bottom">
+                <div class="copyright">
+                    &copy; 2026 SILVA OLA. ALL SYSTEMS OPERATIONAL.
+                </div>
+                <div class="footer-message">
+                    Built with ❤️ & <span class="tech-text">Three.js</span> in ABUJA, Nigeria
+                </div>
+            </div>
+        </footer>
+    </div>
+    
+    <!-- Audio Elements -->
+    <audio id="hoverSound" preload="auto">
+        <source src="https://assets.mixkit.co/sfx/preview/mixkit-select-click-1109.mp3" type="audio/mpeg">
+    </audio>
+    
+    <audio id="clickSound" preload="auto">
+        <source src="https://assets.mixkit.co/sfx/preview/mixkit-tech-click-1137.mp3" type="audio/mpeg">
+    </audio>
+    
+    <!-- Scripts -->
+    <script src="https://cdn.emailjs.com/dist/email.min.js"></script>
+    <script src="scripts.js"></script>
+    
+    <script>
+        // Initialize AOS
+        AOS.init({
+            duration: 1000,
+            once: true,
+            offset: 100,
+            disable: 'mobile'
+        });
+        
+        // Initialize EmailJS
+        emailjs.init("MautG6vAZin7F0F5U");
+    </script>
+</body>
+</html>

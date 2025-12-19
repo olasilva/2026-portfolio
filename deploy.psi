@@ -1,0 +1,124 @@
+# Silva Ola Cyber Portfolio Deployment Script
+Write-Host "🚀 Deploying Cyber Portfolio to Vercel..." -ForegroundColor Green
+Write-Host "==========================================" -ForegroundColor Cyan
+
+# Step 1: Check if Vercel CLI is installed
+Write-Host "`n🔍 Checking Vercel CLI..." -ForegroundColor Yellow
+try {
+    $vercelVersion = vercel --version 2>$null
+    Write-Host "✅ Vercel CLI found: $vercelVersion" -ForegroundColor Green
+} catch {
+    Write-Host "📦 Installing Vercel CLI..." -ForegroundColor Yellow
+    npm install -g vercel
+}
+
+# Step 2: Login to Vercel if needed
+Write-Host "`n🔐 Checking Vercel login..." -ForegroundColor Yellow
+try {
+    $whoami = vercel whoami 2>$null
+    Write-Host "✅ Logged in as: $whoami" -ForegroundColor Green
+} catch {
+    Write-Host "🔑 Logging into Vercel..." -ForegroundColor Yellow
+    vercel login
+}
+
+# Step 3: Check environment variables
+Write-Host "`n⚙️  Checking environment configuration..." -ForegroundColor Yellow
+if (-not (Test-Path ".env")) {
+    Write-Host "⚠️  No .env file found." -ForegroundColor Red
+    Write-Host "Creating .env.example for reference..." -ForegroundColor Yellow
+    
+    @"
+# Silva Ola Cyber Portfolio Configuration
+# ======================================
+
+# Email Configuration (Required for contact form)
+EMAIL_USER=your-email@gmail.com
+EMAIL_PASS=your-app-password
+ADMIN_EMAIL=your-email@gmail.com
+
+# Optional Configuration
+EMAIL_SERVICE=gmail
+NODE_ENV=production
+PORT=5000
+
+# For Gmail, you need to:
+# 1. Enable 2FA on your Google account
+# 2. Generate an App Password: https://myaccount.google.com/apppasswords
+# 3. Use the app password as EMAIL_PASS
+"@ | Out-File -FilePath ".env.example" -Encoding UTF8
+    
+    Write-Host "📝 Created .env.example. Please:" -ForegroundColor Cyan
+    Write-Host "1. Copy .env.example to .env" -ForegroundColor White
+    Write-Host "2. Fill in your email credentials" -ForegroundColor White
+    Write-Host "3. Run this script again" -ForegroundColor White
+    exit
+}
+
+# Step 4: Test the backend locally
+Write-Host "`n🧪 Testing backend locally..." -ForegroundColor Yellow
+$backendProcess = $null
+
+try {
+    # Start backend in background
+    $backendProcess = Start-Process node -ArgumentList "server.js" -PassThru -NoNewWindow
+    
+    # Wait for backend to start
+    Start-Sleep -Seconds 3
+    
+    # Test health endpoint
+    $healthResponse = Invoke-RestMethod -Uri "http://localhost:5000/api/health" -ErrorAction Stop
+    Write-Host "✅ Backend is running:" -ForegroundColor Green
+    Write-Host "   Status: $($healthResponse.status)" -ForegroundColor White
+    Write-Host "   Version: $($healthResponse.version)" -ForegroundColor White
+    
+    # Stop backend
+    Stop-Process -Id $backendProcess.Id -Force -ErrorAction SilentlyContinue
+    
+} catch {
+    Write-Host "❌ Backend test failed: $_" -ForegroundColor Red
+    if ($backendProcess) {
+        Stop-Process -Id $backendProcess.Id -Force -ErrorAction SilentlyContinue
+    }
+    exit
+}
+
+# Step 5: Deploy to Vercel
+Write-Host "`n🚀 Deploying to Vercel..." -ForegroundColor Green
+
+# Deploy preview
+Write-Host "🔨 Building preview deployment..." -ForegroundColor Cyan
+vercel --yes
+
+# Ask for production deployment
+Write-Host "`n🎯 Deploy to production?" -ForegroundColor Yellow
+$deployProd = Read-Host "Type 'yes' to deploy to production (or press Enter for preview only)"
+
+if ($deployProd -eq 'yes') {
+    Write-Host "🚀 Deploying to production..." -ForegroundColor Green
+    vercel --prod --yes
+    
+    # Get deployment URL
+    $deploymentUrl = vercel ls | Select-String -Pattern "silva-cyber-portfolio" | ForEach-Object { $_.Line.Split()[2] }
+    
+    if ($deploymentUrl) {
+        Write-Host "`n🎉 Deployment Complete!" -ForegroundColor Green
+        Write-Host "==========================================" -ForegroundColor Cyan
+        Write-Host "🌐 Your portfolio is live at:" -ForegroundColor Blue
+        Write-Host "   https://$deploymentUrl" -ForegroundColor Cyan
+        Write-Host "`n🔧 API Endpoints:" -ForegroundColor Blue
+        Write-Host "   Health: https://$deploymentUrl/api/health" -ForegroundColor White
+        Write-Host "   Contact: https://$deploymentUrl/api/contact" -ForegroundColor White
+        Write-Host "`n📧 Test the contact form:" -ForegroundColor Blue
+        Write-Host "   https://$deploymentUrl/#contact" -ForegroundColor Cyan
+        Write-Host "`n⚡ Next steps:" -ForegroundColor Yellow
+        Write-Host "1. Test the contact form with your email" -ForegroundColor White
+        Write-Host "2. Check spam folder for confirmation email" -ForegroundColor White
+        Write-Host "3. Share your portfolio link!" -ForegroundColor White
+    }
+} else {
+    Write-Host "`n📋 Preview deployed. Production deployment skipped." -ForegroundColor Yellow
+    Write-Host "Run 'vercel --prod' to deploy to production later." -ForegroundColor White
+}
+
+Write-Host "`n✅ Deployment process completed!" -ForegroundColor Green

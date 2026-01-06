@@ -50,9 +50,7 @@ bower_components/
 # Nuxt.js build output
 .nuxt
 
-# Gatsby files
-.cache/
-public
+
 
 # VuePress build output
 .vuepress/dist

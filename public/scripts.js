@@ -1,338 +1,527 @@
 // ULTRA-MODERN CYBERPUNK PORTFOLIO SCRIPT - MOBILE OPTIMIZED
+// ENHANCED VERSION WITH BUG FIXES AND PERFORMANCE IMPROVEMENTS
 
 class CyberPortfolio {
     constructor() {
+        this.isMobile = window.innerWidth <= 768;
+        this.isTablet = window.innerWidth <= 1024 && window.innerWidth > 768;
+        this.isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+        this.audioEnabled = false;
+        this.currentTheme = 0;
+        this.matrixInterval = null;
+        this.animationFrame = null;
         this.init();
     }
 
     init() {
-        // Initialize all components
-        this.initMobileNavigation(); // FIRST - Mobile nav setup
-        this.initMatrixRain();
-        this.initNeuralNetwork();
-        this.initAudio();
-        this.initTyping();
-        this.initCounters();
-        this.initThemeToggle();
-        this.initForm();
-        this.initAnimations();
-        this.initParallax();
-        this.initCursorEffects();
-        this.initGlitchEffects();
-        this.initTouchOptimizations();
-        this.initPerformanceOptimizations();
-        this.initSmoothScrolling();
+        // Initialize with error handling
+        try {
+            this.initPerformanceMonitoring();
+            this.initMobileNavigation();
+            this.initMatrixRain();
+            this.initNeuralNetwork();
+            this.initAudio();
+            this.initTyping();
+            this.initCounters();
+            this.initThemeToggle();
+            this.initForm();
+            this.initAnimations();
+            this.initParallax();
+            this.initCursorEffects();
+            this.initGlitchEffects();
+            this.initTouchOptimizations();
+            this.initSmoothScrolling();
+            this.initEventListeners();
+        } catch (error) {
+            console.error('Initialization error:', error);
+        }
     }
 
-    // Mobile Navigation Functionality
-    // Mobile Navigation Functionality - SIMPLIFIED VERSION
-initMobileNavigation() {
-    const mobileMenuBtn = document.getElementById('mobileMenuBtn');
-    const hologramNav = document.getElementById('hologramNav');
-    const body = document.body;
-    
-    if (!mobileMenuBtn || !hologramNav) {
-        console.log('Mobile navigation elements not found');
-        return;
+    // Performance monitoring
+    initPerformanceMonitoring() {
+        // Detect low-end devices
+        const memory = navigator.deviceMemory || 4;
+        const cores = navigator.hardwareConcurrency || 4;
+        this.isLowEndDevice = memory < 4 || cores < 4;
+        
+        // Frame rate monitoring
+        this.lastFrameTime = performance.now();
+        this.frameCount = 0;
     }
-    
-    // Toggle mobile menu
-    mobileMenuBtn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        mobileMenuBtn.classList.toggle('active');
-        hologramNav.classList.toggle('active');
-        body.classList.toggle('menu-open');
-    });
-    
-    // Close menu when clicking on a nav item
-    const navItems = hologramNav.querySelectorAll('.nav-item');
-    navItems.forEach(item => {
-        item.addEventListener('click', () => {
-            if (window.innerWidth <= 1024) {
+
+    // Mobile Navigation Functionality - IMPROVED VERSION
+    initMobileNavigation() {
+        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+        const hologramNav = document.getElementById('hologramNav');
+        const body = document.body;
+        
+        if (!mobileMenuBtn || !hologramNav) {
+            console.warn('Mobile navigation elements not found');
+            return;
+        }
+        
+        // Set initial state based on viewport
+        mobileMenuBtn.style.display = window.innerWidth <= 1024 ? 'flex' : 'none';
+        
+        // Toggle mobile menu with animation
+        mobileMenuBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const isActive = mobileMenuBtn.classList.toggle('active');
+            hologramNav.classList.toggle('active');
+            body.classList.toggle('menu-open');
+            
+            // Prevent body scroll when menu is open
+            if (isActive) {
+                body.style.overflow = 'hidden';
+            } else {
+                body.style.overflow = '';
+            }
+        });
+        
+        // Close menu when clicking on a nav item
+        const navItems = hologramNav.querySelectorAll('.nav-item');
+        navItems.forEach(item => {
+            item.addEventListener('click', (e) => {
+                if (window.innerWidth <= 1024) {
+                    e.preventDefault();
+                    const targetId = item.getAttribute('href');
+                    const targetElement = document.querySelector(targetId);
+                    
+                    if (targetElement) {
+                        // Close menu
+                        mobileMenuBtn.classList.remove('active');
+                        hologramNav.classList.remove('active');
+                        body.classList.remove('menu-open');
+                        body.style.overflow = '';
+                        
+                        // Smooth scroll to section
+                        setTimeout(() => {
+                            const headerHeight = this.isMobile ? 70 : 100;
+                            const targetPosition = targetElement.offsetTop - headerHeight;
+                            window.scrollTo({
+                                top: targetPosition,
+                                behavior: 'smooth'
+                            });
+                        }, 300);
+                    }
+                }
+            });
+        });
+        
+        // Close menu when clicking outside - with improved detection
+        document.addEventListener('click', (e) => {
+            if (hologramNav.classList.contains('active') && 
+                !hologramNav.contains(e.target) && 
+                !mobileMenuBtn.contains(e.target)) {
                 mobileMenuBtn.classList.remove('active');
                 hologramNav.classList.remove('active');
                 body.classList.remove('menu-open');
+                body.style.overflow = '';
             }
         });
-    });
-    
-    // Close menu when clicking outside
-    document.addEventListener('click', (e) => {
-        if (!hologramNav.contains(e.target) && !mobileMenuBtn.contains(e.target)) {
-            mobileMenuBtn.classList.remove('active');
-            hologramNav.classList.remove('active');
-            body.classList.remove('menu-open');
-        }
-    });
-    
-    // Handle window resize
-    window.addEventListener('resize', () => {
-        if (window.innerWidth > 1024) {
-            mobileMenuBtn.classList.remove('active');
-            hologramNav.classList.remove('active');
-            body.classList.remove('menu-open');
-        }
-    });
-}
-    // Matrix Rain Effect
+        
+        // Handle window resize with debouncing
+        let resizeTimeout;
+        window.addEventListener('resize', () => {
+            clearTimeout(resizeTimeout);
+            resizeTimeout = setTimeout(() => {
+                if (window.innerWidth > 1024) {
+                    mobileMenuBtn.classList.remove('active');
+                    hologramNav.classList.remove('active');
+                    body.classList.remove('menu-open');
+                    body.style.overflow = '';
+                    mobileMenuBtn.style.display = 'none';
+                } else {
+                    mobileMenuBtn.style.display = 'flex';
+                }
+            }, 250);
+        });
+        
+        // Handle escape key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && hologramNav.classList.contains('active')) {
+                mobileMenuBtn.classList.remove('active');
+                hologramNav.classList.remove('active');
+                body.classList.remove('menu-open');
+                body.style.overflow = '';
+            }
+        });
+    }
+
+    // Matrix Rain Effect - OPTIMIZED VERSION
     initMatrixRain() {
         const canvas = document.getElementById('matrixCanvas');
-        if (!canvas) return;
+        if (!canvas) {
+            console.warn('Matrix canvas not found');
+            return;
+        }
 
         const ctx = canvas.getContext('2d');
+        let animationId = null;
         
-        // Optimize for mobile
-        const isMobile = window.innerWidth <= 768;
-        const charSize = isMobile ? 14 : 20;
+        // Optimize for device
+        const charSize = this.isMobile ? 12 : this.isTablet ? 16 : 20;
+        const columns = Math.floor(window.innerWidth / charSize);
+        const drops = new Array(columns).fill(1);
+        
+        // Character set
+        const chars = "01アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン";
         
         function resizeCanvas() {
             const width = window.innerWidth;
             const height = window.innerHeight;
             
             // Handle high DPI screens
-            const dpr = window.devicePixelRatio || 1;
+            const dpr = Math.min(window.devicePixelRatio || 1, this.isLowEndDevice ? 1 : 2);
             canvas.width = width * dpr;
             canvas.height = height * dpr;
             canvas.style.width = width + 'px';
             canvas.style.height = height + 'px';
-            ctx.scale(dpr, dpr);
+            
+            if (ctx) {
+                ctx.scale(dpr, dpr);
+            }
         }
         
-        resizeCanvas();
+        resizeCanvas.call(this);
         
-        const chars = "01";
-        const columns = Math.floor(canvas.width / (charSize * (window.devicePixelRatio || 1)));
-        const drops = Array(columns).fill(1);
-
         function drawMatrix() {
-            // Reduce opacity for better performance on mobile
-            ctx.fillStyle = window.innerWidth <= 768 ? 'rgba(0, 0, 0, 0.1)' : 'rgba(0, 0, 0, 0.05)';
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            // Semi-transparent black overlay (slower fade on low-end devices)
+            ctx.fillStyle = this.isLowEndDevice ? 'rgba(0, 0, 0, 0.2)' : 'rgba(0, 0, 0, 0.1)';
+            ctx.fillRect(0, 0, canvas.width / (window.devicePixelRatio || 1), 
+                        canvas.height / (window.devicePixelRatio || 1));
 
             ctx.fillStyle = '#00ff41';
-            ctx.font = `${charSize}px 'Courier New', monospace`;
-
+            ctx.font = `${charSize}px 'Courier New', 'MS Gothic', monospace`;
+            
             for (let i = 0; i < drops.length; i++) {
-                const text = chars[Math.floor(Math.random() * chars.length)];
-                ctx.fillText(text, i * charSize, drops[i] * charSize);
-
-                if (drops[i] * charSize > canvas.height / (window.devicePixelRatio || 1) && Math.random() > 0.975) {
+                const char = chars[Math.floor(Math.random() * chars.length)];
+                const y = drops[i] * charSize;
+                
+                // Draw character with slight randomness for glitch effect
+                if (Math.random() > 0.95) {
+                    ctx.fillStyle = '#00f3ff';
+                } else if (Math.random() > 0.99) {
+                    ctx.fillStyle = '#ff00ff';
+                } else {
+                    ctx.fillStyle = '#00ff41';
+                }
+                
+                ctx.fillText(char, i * charSize, y);
+                
+                // Reset drop when it reaches bottom
+                if (y > canvas.height / (window.devicePixelRatio || 1) && Math.random() > 0.975) {
                     drops[i] = 0;
                 }
                 drops[i]++;
             }
+            
+            // Reset color
+            ctx.fillStyle = '#00ff41';
         }
-
-        // Adjust animation speed for mobile
-        const animationSpeed = isMobile ? 80 : 50;
-        setInterval(drawMatrix, animationSpeed);
-
+        
+        // Animation loop with performance optimization
+        function animate() {
+            drawMatrix.call(this);
+            animationId = requestAnimationFrame(animate.bind(this));
+        }
+        
+        // Start animation
+        animate.call(this);
+        
+        // Handle resize with proper cleanup
+        let resizeTimeout;
         window.addEventListener('resize', () => {
-            resizeCanvas();
-            const newColumns = Math.floor(canvas.width / (charSize * (window.devicePixelRatio || 1)));
-            while (drops.length < newColumns) drops.push(1);
-            while (drops.length > newColumns) drops.pop();
+            clearTimeout(resizeTimeout);
+            resizeTimeout = setTimeout(() => {
+                if (animationId) {
+                    cancelAnimationFrame(animationId);
+                }
+                resizeCanvas.call(this);
+                drops.length = Math.floor(window.innerWidth / charSize);
+                drops.fill(1);
+                animate.call(this);
+            }, 100);
         });
+        
+        // Clean up on destroy
+        this.matrixInterval = animationId;
     }
 
-    // 3D Neural Network Background - Lighter version for mobile
+    // 3D Neural Network Background - OPTIMIZED VERSION
     initNeuralNetwork() {
         const canvas = document.getElementById('neuralNetwork');
-        if (!canvas || window.innerWidth <= 768) {
-            // Disable 3D on mobile for better performance
+        
+        // Disable on mobile or low-end devices for better performance
+        if (!canvas || this.isMobile || this.isLowEndDevice) {
             if (canvas) canvas.style.display = 'none';
             return;
         }
 
         // Check if THREE is available
         if (typeof THREE === 'undefined') {
-            console.warn('THREE.js is not loaded');
-            canvas.style.display = 'none';
+            console.warn('THREE.js is not loaded - neural network disabled');
+            if (canvas) canvas.style.display = 'none';
             return;
         }
 
-        const scene = new THREE.Scene();
-        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-        const renderer = new THREE.WebGLRenderer({ 
-            canvas, 
-            alpha: true, 
-            antialias: true,
-            powerPreference: "high-performance"
-        });
-
-        renderer.setSize(window.innerWidth, window.innerHeight);
-        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-
-        // Create nodes - fewer on mobile
-        const nodes = [];
-        const nodeCount = window.innerWidth <= 1024 ? 20 : 50;
-        const geometry = new THREE.SphereGeometry(0.1, 6, 6); // Lower resolution
-        const material = new THREE.MeshBasicMaterial({ color: 0x00f3ff });
-
-        for (let i = 0; i < nodeCount; i++) {
-            const node = new THREE.Mesh(geometry, material);
-            node.position.set(
-                (Math.random() - 0.5) * 15,
-                (Math.random() - 0.5) * 15,
-                (Math.random() - 0.5) * 15
-            );
-            node.velocity = new THREE.Vector3(
-                (Math.random() - 0.5) * 0.01,
-                (Math.random() - 0.5) * 0.01,
-                (Math.random() - 0.5) * 0.01
-            );
-            scene.add(node);
-            nodes.push(node);
-        }
-
-        // Create connections
-        const connectionMaterial = new THREE.LineBasicMaterial({ 
-            color: 0x00f3ff, 
-            transparent: true, 
-            opacity: 0.2 
-        });
-        const connections = [];
-
-        function createConnections() {
-            // Remove old connections
-            connections.forEach(conn => {
-                scene.remove(conn);
-                if (conn.geometry) conn.geometry.dispose();
+        try {
+            const scene = new THREE.Scene();
+            const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
+            const renderer = new THREE.WebGLRenderer({ 
+                canvas, 
+                alpha: true, 
+                antialias: !this.isLowEndDevice,
+                powerPreference: "high-performance"
             });
-            connections.length = 0;
 
-            // Create new connections - fewer on mobile
-            const maxConnections = window.innerWidth <= 768 ? 30 : 100;
-            let connectionCount = 0;
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+            renderer.setClearColor(0x000000, 0);
 
-            for (let i = 0; i < nodes.length && connectionCount < maxConnections; i++) {
-                for (let j = i + 1; j < nodes.length && connectionCount < maxConnections; j++) {
-                    const distance = nodes[i].position.distanceTo(nodes[j].position);
-                    if (distance < 8) {
-                        const geometry = new THREE.BufferGeometry().setFromPoints([
-                            nodes[i].position,
-                            nodes[j].position
-                        ]);
-                        const line = new THREE.Line(geometry, connectionMaterial);
-                        scene.add(line);
-                        connections.push(line);
-                        connectionCount++;
+            // Create nodes - optimized count
+            const nodes = [];
+            const nodeCount = this.isTablet ? 15 : 25;
+            const geometry = new THREE.SphereGeometry(0.08, 8, 8);
+            const material = new THREE.MeshBasicMaterial({ 
+                color: 0x00f3ff,
+                transparent: true,
+                opacity: 0.8
+            });
+
+            for (let i = 0; i < nodeCount; i++) {
+                const node = new THREE.Mesh(geometry, material);
+                node.position.set(
+                    (Math.random() - 0.5) * 10,
+                    (Math.random() - 0.5) * 10,
+                    (Math.random() - 0.5) * 10
+                );
+                node.velocity = new THREE.Vector3(
+                    (Math.random() - 0.5) * 0.008,
+                    (Math.random() - 0.5) * 0.008,
+                    (Math.random() - 0.5) * 0.008
+                );
+                scene.add(node);
+                nodes.push(node);
+            }
+
+            // Create connections
+            const connectionMaterial = new THREE.LineBasicMaterial({ 
+                color: 0x00f3ff, 
+                transparent: true, 
+                opacity: 0.15 
+            });
+            let connections = [];
+
+            function updateConnections() {
+                // Remove old connections
+                connections.forEach(conn => {
+                    scene.remove(conn);
+                    if (conn.geometry) conn.geometry.dispose();
+                });
+                connections = [];
+
+                // Create new connections
+                const maxConnections = this.isTablet ? 20 : 40;
+                let connectionCount = 0;
+
+                for (let i = 0; i < nodes.length && connectionCount < maxConnections; i++) {
+                    for (let j = i + 1; j < nodes.length && connectionCount < maxConnections; j++) {
+                        const distance = nodes[i].position.distanceTo(nodes[j].position);
+                        if (distance < 6) {
+                            const geometry = new THREE.BufferGeometry().setFromPoints([
+                                nodes[i].position,
+                                nodes[j].position
+                            ]);
+                            const line = new THREE.Line(geometry, connectionMaterial);
+                            scene.add(line);
+                            connections.push(line);
+                            connectionCount++;
+                        }
                     }
                 }
             }
-        }
 
-        // Animation with performance optimization
-        let frameCount = 0;
-        function animate() {
-            requestAnimationFrame(animate);
+            // Animation with frame skipping for slower devices
+            let lastUpdate = 0;
+            const updateInterval = this.isLowEndDevice ? 1000 / 30 : 1000 / 60; // 30fps or 60fps
+            
+            function animate(time) {
+                this.animationFrame = requestAnimationFrame(animate.bind(this));
 
-            // Skip frames on slower devices
-            frameCount++;
-            if (window.innerWidth <= 768 && frameCount % 2 === 0) return;
+                // Frame rate control
+                if (time - lastUpdate < updateInterval) return;
+                lastUpdate = time;
 
-            nodes.forEach(node => {
-                node.position.add(node.velocity);
-                
-                // Bounce off boundaries
-                if (Math.abs(node.position.x) > 7.5) node.velocity.x *= -1;
-                if (Math.abs(node.position.y) > 7.5) node.velocity.y *= -1;
-                if (Math.abs(node.position.z) > 7.5) node.velocity.z *= -1;
-            });
+                // Update nodes
+                nodes.forEach(node => {
+                    node.position.add(node.velocity);
+                    
+                    // Bounce with damping
+                    if (Math.abs(node.position.x) > 5) {
+                        node.velocity.x *= -0.95;
+                        node.position.x = Math.sign(node.position.x) * 5;
+                    }
+                    if (Math.abs(node.position.y) > 5) {
+                        node.velocity.y *= -0.95;
+                        node.position.y = Math.sign(node.position.y) * 5;
+                    }
+                    if (Math.abs(node.position.z) > 5) {
+                        node.velocity.z *= -0.95;
+                        node.position.z = Math.sign(node.position.z) * 5;
+                    }
+                });
 
-            // Update connections less frequently on mobile
-            if (frameCount % (window.innerWidth <= 768 ? 10 : 5) === 0) {
-                createConnections();
+                // Update connections less frequently
+                if (Math.random() > 0.9) {
+                    updateConnections.call(this);
+                }
+
+                renderer.render(scene, camera);
             }
 
-            renderer.render(scene, camera);
+            camera.position.z = 8;
+            updateConnections.call(this);
+            animate.call(this, 0);
+
+            // Handle resize with cleanup
+            let resizeTimeout;
+            window.addEventListener('resize', () => {
+                clearTimeout(resizeTimeout);
+                resizeTimeout = setTimeout(() => {
+                    if (window.innerWidth <= 768) {
+                        // Dispose resources
+                        renderer.dispose();
+                        geometry.dispose();
+                        material.dispose();
+                        connectionMaterial.dispose();
+                        canvas.style.display = 'none';
+                        if (this.animationFrame) {
+                            cancelAnimationFrame(this.animationFrame);
+                        }
+                    } else {
+                        camera.aspect = window.innerWidth / window.innerHeight;
+                        camera.updateProjectionMatrix();
+                        renderer.setSize(window.innerWidth, window.innerHeight);
+                    }
+                }, 250);
+            });
+
+        } catch (error) {
+            console.error('Neural network initialization error:', error);
+            if (canvas) canvas.style.display = 'none';
         }
-
-        camera.position.z = 12;
-        animate();
-
-        // Handle resize
-        let resizeTimeout;
-        window.addEventListener('resize', () => {
-            clearTimeout(resizeTimeout);
-            resizeTimeout = setTimeout(() => {
-                if (window.innerWidth <= 768) {
-                    // Disable 3D on small screens
-                    canvas.style.display = 'none';
-                    renderer.dispose();
-                } else {
-                    canvas.style.display = 'block';
-                    camera.aspect = window.innerWidth / window.innerHeight;
-                    camera.updateProjectionMatrix();
-                    renderer.setSize(window.innerWidth, window.innerHeight);
-                }
-            }, 250);
-        });
     }
 
-    // Audio System
+    // Audio System - IMPROVED VERSION
     initAudio() {
         const audioToggle = document.getElementById('audioToggle');
         const hoverSound = document.getElementById('hoverSound');
         const clickSound = document.getElementById('clickSound');
 
-        if (!audioToggle) return;
+        if (!audioToggle) {
+            console.warn('Audio toggle not found');
+            return;
+        }
 
-        let audioEnabled = false;
+        // Check if audio is supported
+        const audioContext = window.AudioContext || window.webkitAudioContext;
+        this.canPlayAudio = !!audioContext && !this.isLowEndDevice;
+        
+        if (!this.canPlayAudio) {
+            audioToggle.style.display = 'none';
+            return;
+        }
 
-        // Enable audio on first interaction
-        const enableAudio = () => {
-            if (!audioEnabled) {
-                audioEnabled = true;
-                hoverSound.volume = 0.2;
-                clickSound.volume = 0.2;
-                const btnText = audioToggle.querySelector('.btn-text');
-                if (btnText) btnText.textContent = 'AUDIO ON';
+        // Initialize audio context on user interaction
+        let audioInitialized = false;
+        
+        const initializeAudio = () => {
+            if (audioInitialized) return;
+            
+            try {
+                // Preload audio files
+                if (hoverSound) hoverSound.load();
+                if (clickSound) clickSound.load();
+                
+                audioInitialized = true;
+                console.log('Audio system initialized');
+            } catch (error) {
+                console.error('Audio initialization failed:', error);
             }
         };
 
-        // Toggle audio
+        // Toggle audio with visual feedback
         audioToggle.addEventListener('click', (e) => {
             e.preventDefault();
-            enableAudio();
-            audioEnabled = !audioEnabled;
-            const text = audioEnabled ? 'AUDIO ON' : 'AUDIO OFF';
-            const btnText = audioToggle.querySelector('.btn-text');
-            if (btnText) btnText.textContent = text;
+            e.stopPropagation();
             
-            if (audioEnabled) {
-                clickSound.currentTime = 0;
-                clickSound.play().catch(e => console.log('Audio play failed:', e));
+            initializeAudio();
+            
+            this.audioEnabled = !this.audioEnabled;
+            const btnText = audioToggle.querySelector('.btn-text');
+            
+            if (btnText) {
+                btnText.textContent = this.audioEnabled ? 'AUDIO ON' : 'AUDIO OFF';
+            }
+            
+            // Add visual feedback
+            audioToggle.classList.toggle('active', this.audioEnabled);
+            
+            // Play feedback sound
+            if (this.audioEnabled && clickSound) {
+                try {
+                    clickSound.currentTime = 0;
+                    clickSound.play().catch(() => {
+                        console.warn('Audio play failed - user interaction required');
+                    });
+                } catch (error) {
+                    console.error('Audio play error:', error);
+                }
             }
         });
 
-        // Add hover sounds to interactive elements - disable on mobile for performance
-        if (window.innerWidth > 768) {
-            document.querySelectorAll('.cyber-btn, .nav-item, .matrix-cell, .tech-item').forEach(element => {
+        // Add audio feedback to interactive elements (desktop only)
+        if (!this.isTouchDevice) {
+            const interactiveElements = document.querySelectorAll('.cyber-btn, .nav-item, .matrix-cell, .tech-item');
+            
+            interactiveElements.forEach(element => {
                 element.addEventListener('mouseenter', () => {
-                    if (audioEnabled) {
+                    if (this.audioEnabled && hoverSound) {
                         hoverSound.currentTime = 0;
-                        hoverSound.play().catch(e => console.log('Audio play failed:', e));
+                        hoverSound.volume = 0.15;
+                        hoverSound.play().catch(() => {});
                     }
                 });
 
-                element.addEventListener('click', () => {
-                    if (audioEnabled) {
+                element.addEventListener('click', (e) => {
+                    if (this.audioEnabled && clickSound && e.target !== audioToggle) {
                         clickSound.currentTime = 0;
-                        clickSound.play().catch(e => console.log('Audio play failed:', e));
+                        clickSound.volume = 0.2;
+                        clickSound.play().catch(() => {});
                     }
                 });
             });
         }
 
-        // Enable audio on first click anywhere
-        document.addEventListener('click', enableAudio, { once: true });
+        // Enable audio on first interaction
+        const enableOnInteraction = () => {
+            initializeAudio();
+            document.removeEventListener('click', enableOnInteraction);
+            document.removeEventListener('keydown', enableOnInteraction);
+        };
+
+        document.addEventListener('click', enableOnInteraction);
+        document.addEventListener('keydown', enableOnInteraction);
     }
 
-    // Typing Animation
+    // Typing Animation - IMPROVED VERSION
     initTyping() {
         const typingElement = document.getElementById('typingCommand');
-        if (!typingElement) return;
+        if (!typingElement) {
+            console.warn('Typing element not found');
+            return;
+        }
 
         const commands = [
             'npm start',
@@ -349,12 +538,13 @@ initMobileNavigation() {
         let charIndex = 0;
         let isDeleting = false;
         let isPaused = false;
+        let typingTimeout = null;
 
         function type() {
             const currentCommand = commands[commandIndex];
 
             if (isPaused) {
-                setTimeout(type, 1000);
+                typingTimeout = setTimeout(type, 1000);
                 isPaused = false;
                 return;
             }
@@ -362,160 +552,231 @@ initMobileNavigation() {
             if (!isDeleting && charIndex <= currentCommand.length) {
                 typingElement.textContent = currentCommand.substring(0, charIndex);
                 charIndex++;
-                setTimeout(type, window.innerWidth <= 768 ? 120 : 100); // Slower on mobile
+                typingTimeout = setTimeout(type, this.isMobile ? 100 : 80);
             } else if (isDeleting && charIndex >= 0) {
                 typingElement.textContent = currentCommand.substring(0, charIndex);
                 charIndex--;
-                setTimeout(type, window.innerWidth <= 768 ? 80 : 50); // Slower on mobile
+                typingTimeout = setTimeout(type, this.isMobile ? 60 : 40);
             } else {
                 isDeleting = !isDeleting;
                 if (!isDeleting) {
                     commandIndex = (commandIndex + 1) % commands.length;
                 }
                 isPaused = true;
-                setTimeout(type, 500);
+                typingTimeout = setTimeout(type, 500);
             }
         }
 
-        setTimeout(type, 1000);
+        // Start typing animation
+        typingTimeout = setTimeout(() => type.call(this), 1000);
+
+        // Clean up on page hide
+        document.addEventListener('visibilitychange', () => {
+            if (document.hidden && typingTimeout) {
+                clearTimeout(typingTimeout);
+            }
+        });
     }
 
-    // Animated Counters
+    // Animated Counters - IMPROVED VERSION
     initCounters() {
         const counters = document.querySelectorAll('.stat-number[data-count]');
+        
+        if (counters.length === 0) {
+            console.warn('No counters found');
+            return;
+        }
 
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
                     const counter = entry.target;
                     const target = parseInt(counter.getAttribute('data-count')) || 0;
-                    const duration = window.innerWidth <= 768 ? 1500 : 2000; // Faster on mobile
-                    const step = target / (duration / 16);
-                    let current = 0;
-
-                    const updateCounter = () => {
-                        if (current < target) {
-                            current += step;
-                            counter.textContent = Math.ceil(current);
-                            requestAnimationFrame(updateCounter);
-                        } else {
-                            counter.textContent = target;
-                        }
+                    const duration = this.isMobile ? 1500 : 2000;
+                    const startTime = performance.now();
+                    
+                    // Format number with commas
+                    const formatNumber = (num) => {
+                        return num.toLocaleString('en-US');
                     };
 
-                    updateCounter();
+                    function updateCounter(currentTime) {
+                        const elapsed = currentTime - startTime;
+                        const progress = Math.min(elapsed / duration, 1);
+                        
+                        // Easing function for smooth animation
+                        const easeOutQuart = 1 - Math.pow(1 - progress, 4);
+                        const currentValue = Math.floor(easeOutQuart * target);
+                        
+                        counter.textContent = formatNumber(currentValue);
+                        
+                        if (progress < 1) {
+                            requestAnimationFrame(updateCounter);
+                        } else {
+                            counter.textContent = formatNumber(target);
+                        }
+                    }
+
+                    requestAnimationFrame(updateCounter);
                     observer.unobserve(counter);
                 }
             });
         }, { 
-            threshold: 0.3, // Lower threshold for mobile
-            rootMargin: '0px 0px -50px 0px' // Adjust for mobile view
+            threshold: 0.3,
+            rootMargin: '0px 0px -100px 0px'
         });
 
         counters.forEach(counter => observer.observe(counter));
     }
 
-    // Theme Toggle
+    // Theme Toggle - IMPROVED VERSION
     initThemeToggle() {
         const themeToggle = document.getElementById('themeToggle');
-        if (!themeToggle) return;
+        if (!themeToggle) {
+            console.warn('Theme toggle not found');
+            return;
+        }
 
         const themes = ['cyber-theme', 'matrix-theme', 'neon-theme'];
-        let currentTheme = 0;
+        const themeNames = ['CYBER', 'MATRIX', 'NEON'];
+
+        // Load saved theme
+        try {
+            const savedTheme = localStorage.getItem('portfolioTheme');
+            if (savedTheme && themes.includes(savedTheme)) {
+                this.currentTheme = themes.indexOf(savedTheme);
+                document.body.classList.add(savedTheme);
+                
+                const btnText = themeToggle.querySelector('.btn-text');
+                if (btnText) btnText.textContent = themeNames[this.currentTheme];
+                themeToggle.classList.add('active');
+            }
+        } catch (error) {
+            console.warn('Failed to load theme from localStorage:', error);
+        }
 
         themeToggle.addEventListener('click', (e) => {
             e.preventDefault();
+            e.stopPropagation();
             
-            // Remove all themes first
+            // Remove all themes
             themes.forEach(theme => document.body.classList.remove(theme));
             
             // Cycle to next theme
-            currentTheme = (currentTheme + 1) % themes.length;
+            this.currentTheme = (this.currentTheme + 1) % themes.length;
             
-            // Apply new theme
-            document.body.classList.add(themes[currentTheme]);
+            // Apply new theme with transition
+            document.body.style.opacity = '0.9';
+            setTimeout(() => {
+                document.body.classList.add(themes[this.currentTheme]);
+                document.body.style.opacity = '';
+            }, 150);
             
             // Update button text
-            const themeNames = ['CYBER', 'MATRIX', 'NEON'];
             const btnText = themeToggle.querySelector('.btn-text');
-            if (btnText) btnText.textContent = themeNames[currentTheme];
+            if (btnText) btnText.textContent = themeNames[this.currentTheme];
+            
+            // Add visual feedback
+            themeToggle.classList.add('pulse');
+            setTimeout(() => {
+                themeToggle.classList.remove('pulse');
+            }, 300);
             
             // Save to localStorage
-            localStorage.setItem('portfolioTheme', themes[currentTheme]);
+            try {
+                localStorage.setItem('portfolioTheme', themes[this.currentTheme]);
+            } catch (error) {
+                console.warn('Failed to save theme to localStorage:', error);
+            }
         });
-
-        // Load saved theme
-        const savedTheme = localStorage.getItem('portfolioTheme');
-        if (savedTheme && themes.includes(savedTheme)) {
-            currentTheme = themes.indexOf(savedTheme);
-            document.body.classList.add(savedTheme);
-            const themeNames = ['CYBER', 'MATRIX', 'NEON'];
-            const btnText = themeToggle.querySelector('.btn-text');
-            if (btnText) btnText.textContent = themeNames[currentTheme];
-        }
     }
 
-    // Form Submission
+    // Form Submission - IMPROVED VERSION
     initForm() {
         const form = document.getElementById('cyberForm');
-        if (!form) return;
+        if (!form) {
+            console.warn('Form not found');
+            return;
+        }
 
         // Helper function for notifications
-        const showNotification = (message, type = 'info') => {
+        const showNotification = (message, type = 'success') => {
+            // Remove existing notifications
+            document.querySelectorAll('.cyber-notification').forEach(n => n.remove());
+            
             const notification = document.createElement('div');
             notification.className = `cyber-notification ${type}`;
             notification.textContent = message;
+            notification.setAttribute('role', 'alert');
+            notification.setAttribute('aria-live', 'polite');
+            
+            // Position based on device
+            const topPosition = this.isMobile ? '20px' : '30px';
+            const sidePosition = this.isMobile ? '20px' : '30px';
+            
             notification.style.cssText = `
                 position: fixed;
-                top: ${window.innerWidth <= 768 ? '10px' : '20px'};
-                right: ${window.innerWidth <= 768 ? '10px' : '20px'};
-                left: ${window.innerWidth <= 768 ? '10px' : 'auto'};
-                padding: ${window.innerWidth <= 768 ? '12px 20px' : '15px 25px'};
+                top: ${topPosition};
+                right: ${sidePosition};
+                left: ${this.isMobile ? '20px' : 'auto'};
+                padding: ${this.isMobile ? '16px 24px' : '20px 30px'};
                 background: ${type === 'error' ? 'rgba(255,0,51,0.95)' : 'rgba(0,255,65,0.95)'};
-                color: white;
+                color: #000;
                 border: 2px solid ${type === 'error' ? '#ff0066' : '#00ff41'};
-                border-radius: ${window.innerWidth <= 768 ? '8px' : '10px'};
-                z-index: 10000;
+                border-radius: 8px;
+                z-index: 99999;
                 font-family: 'Courier New', monospace;
-                font-size: ${window.innerWidth <= 768 ? '0.9rem' : '1rem'};
-                animation: slideIn 0.3s ease-out;
-                max-width: ${window.innerWidth <= 768 ? 'calc(100% - 20px)' : '400px'};
-                text-align: center;
+                font-size: ${this.isMobile ? '14px' : '16px'};
+                animation: cyberNotificationSlideIn 0.3s ease-out;
                 backdrop-filter: blur(10px);
                 box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+                max-width: ${this.isMobile ? 'calc(100% - 40px)' : '400px'};
+                text-align: center;
+                font-weight: bold;
             `;
             
             document.body.appendChild(notification);
             
+            // Auto-remove after 5 seconds
             setTimeout(() => {
-                notification.style.animation = 'slideOut 0.3s ease-out';
-                setTimeout(() => notification.remove(), 300);
+                notification.style.animation = 'cyberNotificationSlideOut 0.3s ease-out';
+                setTimeout(() => {
+                    if (notification.parentNode) {
+                        notification.remove();
+                    }
+                }, 300);
             }, 5000);
+            
+            // Allow manual dismissal
+            notification.addEventListener('click', () => {
+                notification.style.animation = 'cyberNotificationSlideOut 0.3s ease-out';
+                setTimeout(() => notification.remove(), 300);
+            });
         };
 
-        // Add CSS animations for notifications
-        if (!document.querySelector('#notification-styles')) {
+        // Add notification animations
+        if (!document.querySelector('#notification-animations')) {
             const style = document.createElement('style');
-            style.id = 'notification-styles';
+            style.id = 'notification-animations';
             style.textContent = `
-                @keyframes slideIn {
-                    from { 
-                        transform: ${window.innerWidth <= 768 ? 'translateY(-100px)' : 'translateX(100px)'};
+                @keyframes cyberNotificationSlideIn {
+                    from {
+                        transform: ${this.isMobile ? 'translateY(-100px)' : 'translateX(100px)'};
                         opacity: 0;
                     }
-                    to { 
-                        transform: ${window.innerWidth <= 768 ? 'translateY(0)' : 'translateX(0)'};
+                    to {
+                        transform: ${this.isMobile ? 'translateY(0)' : 'translateX(0)'};
                         opacity: 1;
                     }
                 }
                 
-                @keyframes slideOut {
-                    from { 
-                        transform: ${window.innerWidth <= 768 ? 'translateY(0)' : 'translateX(0)'};
+                @keyframes cyberNotificationSlideOut {
+                    from {
+                        transform: ${this.isMobile ? 'translateY(0)' : 'translateX(0)'};
                         opacity: 1;
                     }
-                    to { 
-                        transform: ${window.innerWidth <= 768 ? 'translateY(-100px)' : 'translateX(100px)'};
+                    to {
+                        transform: ${this.isMobile ? 'translateY(-100px)' : 'translateX(100px)'};
                         opacity: 0;
                     }
                 }
@@ -523,133 +784,190 @@ initMobileNavigation() {
             document.head.appendChild(style);
         }
 
+        // Email validation
+        const validateEmail = (email) => {
+            const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return re.test(email);
+        };
+
+        // Real-time validation
+        const inputs = form.querySelectorAll('input, textarea');
+        inputs.forEach(input => {
+            input.addEventListener('input', () => {
+                if (input.value.trim() === '') {
+                    input.classList.add('error');
+                } else {
+                    input.classList.remove('error');
+                    input.classList.add('valid');
+                }
+            });
+            
+            input.addEventListener('blur', () => {
+                if (input.type === 'email' && input.value.trim() !== '' && !validateEmail(input.value)) {
+                    input.classList.add('error');
+                    showNotification('Please enter a valid email address', 'error');
+                }
+            });
+        });
+
+        // Form submission
         form.addEventListener('submit', async (e) => {
             e.preventDefault();
 
             const submitBtn = document.getElementById('submitBtn');
-            const originalText = submitBtn.querySelector('.btn-text').textContent;
+            if (!submitBtn) return;
+
+            const originalText = submitBtn.querySelector('.btn-text')?.textContent || 'SEND MESSAGE';
             
             // Validate form
             const name = document.getElementById('name').value.trim();
             const email = document.getElementById('email').value.trim();
             const message = document.getElementById('message').value.trim();
             
-            if (!name || !email || !message) {
-                showNotification('Please fill in all required fields', 'error');
-                return;
+            let isValid = true;
+            
+            if (!name) {
+                document.getElementById('name').classList.add('error');
+                isValid = false;
             }
             
-            if (!validateEmail(email)) {
-                showNotification('Please enter a valid email address', 'error');
+            if (!email || !validateEmail(email)) {
+                document.getElementById('email').classList.add('error');
+                isValid = false;
+            }
+            
+            if (!message) {
+                document.getElementById('message').classList.add('error');
+                isValid = false;
+            }
+            
+            if (!isValid) {
+                showNotification('Please fill in all required fields correctly', 'error');
                 return;
             }
 
             // Show loading state
             submitBtn.querySelector('.btn-text').textContent = 'TRANSMITTING...';
             submitBtn.disabled = true;
-            submitBtn.style.opacity = '0.7';
+            submitBtn.classList.add('loading');
 
-            // Simulate API call with timeout for demo
-            setTimeout(() => {
-                // Show success state
-                submitBtn.querySelector('.btn-text').textContent = 'TRANSMISSION SUCCESSFUL!';
-                submitBtn.style.background = 'linear-gradient(45deg, #00ff41, #00f3ff)';
+            // Simulate API call (replace with real API in production)
+            try {
+                // In production, replace this with actual fetch/axios call
+                await new Promise(resolve => setTimeout(resolve, 1500));
                 
-                // Show success notification
-                showNotification('Message transmitted successfully! I\'ll get back to you soon.', 'success');
+                // Success
+                submitBtn.querySelector('.btn-text').textContent = 'TRANSMISSION SUCCESSFUL!';
+                submitBtn.classList.add('success');
+                
+                showNotification('Message transmitted successfully! I\'ll respond within 24 hours.', 'success');
                 
                 // Reset form
                 form.reset();
+                inputs.forEach(input => {
+                    input.classList.remove('valid', 'error');
+                });
                 
                 // Reset button after 3 seconds
                 setTimeout(() => {
                     submitBtn.querySelector('.btn-text').textContent = originalText;
                     submitBtn.disabled = false;
-                    submitBtn.style.opacity = '';
-                    submitBtn.style.background = '';
+                    submitBtn.classList.remove('loading', 'success');
                 }, 3000);
-            }, 2000);
-        });
-
-        // Email validation helper
-        function validateEmail(email) {
-            const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            return re.test(email);
-        }
-
-        // Add input validation styles
-        const inputs = form.querySelectorAll('input, textarea');
-        inputs.forEach(input => {
-            input.addEventListener('blur', () => {
-                if (input.value.trim() === '') {
-                    input.style.borderColor = '#ff0033';
-                } else {
-                    input.style.borderColor = '#00ff41';
-                }
-            });
+                
+            } catch (error) {
+                console.error('Form submission error:', error);
+                submitBtn.querySelector('.btn-text').textContent = 'TRANSMISSION FAILED';
+                submitBtn.classList.add('error');
+                showNotification('Transmission failed. Please try again.', 'error');
+                
+                setTimeout(() => {
+                    submitBtn.querySelector('.btn-text').textContent = originalText;
+                    submitBtn.disabled = false;
+                    submitBtn.classList.remove('loading', 'error');
+                }, 3000);
+            }
         });
     }
 
-    // Advanced Animations
+    // Advanced Animations - OPTIMIZED
     initAnimations() {
-        // Reduce animations on mobile for performance
-        if (window.innerWidth <= 768) {
+        // Skip on low-end devices or mobile
+        if (this.isMobile || this.isLowEndDevice) {
             document.querySelectorAll('.matrix-cell, .tech-item, .hologram-frame').forEach(element => {
                 element.style.animation = 'none';
             });
             return;
         }
 
-        // Glitch effect on hover (desktop only)
-        document.querySelectorAll('.matrix-cell, .tech-item, .hologram-frame').forEach(element => {
+        // Glitch effect on hover
+        const glitchableElements = document.querySelectorAll('.matrix-cell, .tech-item, .hologram-frame');
+        
+        glitchableElements.forEach(element => {
             element.addEventListener('mouseenter', () => {
                 element.style.animation = 'none';
-                setTimeout(() => {
-                    element.style.animation = 'matrixGlitch 0.5s';
-                }, 10);
+                requestAnimationFrame(() => {
+                    element.style.animation = 'cyberGlitch 0.3s';
+                });
             });
         });
 
-        // Random glitch effect (desktop only)
+        // Random glitch effect
         setInterval(() => {
-            const glitchElements = document.querySelectorAll('.title-highlight, .neon-text');
-            glitchElements.forEach(element => {
-                if (Math.random() > 0.9) {
-                    element.style.textShadow = `0 0 20px ${getRandomColor()}`;
+            if (Math.random() > 0.7) {
+                const glitchElements = document.querySelectorAll('.title-highlight, .neon-text');
+                glitchElements.forEach(element => {
+                    element.style.textShadow = `0 0 20px ${getRandomNeonColor()}`;
                     setTimeout(() => {
                         element.style.textShadow = '';
-                    }, 100);
-                }
-            });
+                    }, 50);
+                });
+            }
         }, 3000);
     }
 
-    // Parallax Effect - Disable on mobile
+    // Parallax Effect - OPTIMIZED
     initParallax() {
-        if (window.innerWidth <= 768) return;
+        // Disable on touch devices for better performance
+        if (this.isTouchDevice || this.isMobile) return;
+
+        let mouseX = 0;
+        let mouseY = 0;
+        let lastTime = 0;
 
         document.addEventListener('mousemove', (e) => {
-            const x = (e.clientX / window.innerWidth - 0.5) * 20;
-            const y = (e.clientY / window.innerHeight - 0.5) * 20;
+            const currentTime = performance.now();
+            if (currentTime - lastTime < 16) return; // Limit to ~60fps
+            lastTime = currentTime;
 
-            document.querySelectorAll('.hologram-frame, .matrix-cell').forEach(element => {
-                element.style.transform = `translateX(${x}px) translateY(${y}px)`;
-            });
+            mouseX = (e.clientX / window.innerWidth - 0.5) * 15;
+            mouseY = (e.clientY / window.innerHeight - 0.5) * 15;
         });
+
+        function updateParallax() {
+            document.querySelectorAll('.hologram-frame, .matrix-cell').forEach(element => {
+                element.style.transform = `translateX(${mouseX}px) translateY(${mouseY}px)`;
+            });
+            requestAnimationFrame(updateParallax);
+        }
+
+        updateParallax();
     }
 
-    // Custom Cursor Effects - Disable on mobile
+    // Custom Cursor Effects - OPTIMIZED
     initCursorEffects() {
-        if ('ontouchstart' in window || navigator.maxTouchPoints) {
-            return; // Disable on touch devices
-        }
+        // Disable on touch devices
+        if (this.isTouchDevice) return;
 
         const cursor = document.createElement('div');
         cursor.className = 'cyber-cursor';
-        document.body.appendChild(cursor);
-
+        cursor.setAttribute('aria-hidden', 'true');
+        
         const cursor2 = document.createElement('div');
         cursor2.className = 'cyber-cursor-2';
+        cursor2.setAttribute('aria-hidden', 'true');
+        
+        document.body.appendChild(cursor);
         document.body.appendChild(cursor2);
 
         let mouseX = 0;
@@ -664,26 +982,7 @@ initMobileNavigation() {
             mouseY = e.clientY;
         });
 
-        function updateCursor() {
-            // Primary cursor with smooth follow
-            cursorX += (mouseX - cursorX) * 0.15;
-            cursorY += (mouseY - cursorY) * 0.15;
-            
-            // Secondary cursor with delay
-            cursor2X += (mouseX - cursor2X) * 0.05;
-            cursor2Y += (mouseY - cursor2Y) * 0.05;
-            
-            cursor.style.left = cursorX + 'px';
-            cursor.style.top = cursorY + 'px';
-            cursor2.style.left = cursor2X + 'px';
-            cursor2.style.top = cursor2Y + 'px';
-            
-            requestAnimationFrame(updateCursor);
-        }
-
-        updateCursor();
-
-        // Add cursor styles
+        // Cursor styles
         const style = document.createElement('style');
         style.textContent = `
             .cyber-cursor {
@@ -712,8 +1011,8 @@ initMobileNavigation() {
                 transform: translate(-50%, -50%);
             }
             
-            /* Hide default cursor */
-            * {
+            /* Hide default cursor when custom cursor is active */
+            .cyber-cursor-active * {
                 cursor: none !important;
             }
             
@@ -722,136 +1021,247 @@ initMobileNavigation() {
                 .cyber-cursor-2 {
                     display: none !important;
                 }
-                
-                * {
-                    cursor: auto !important;
-                }
             }
         `;
         document.head.appendChild(style);
+
+        document.body.classList.add('cyber-cursor-active');
+
+        // Animation loop
+        function animateCursor() {
+            cursorX += (mouseX - cursorX) * 0.15;
+            cursorY += (mouseY - cursorY) * 0.15;
+            
+            cursor2X += (mouseX - cursor2X) * 0.05;
+            cursor2Y += (mouseY - cursor2Y) * 0.05;
+            
+            cursor.style.left = cursorX + 'px';
+            cursor.style.top = cursorY + 'px';
+            cursor2.style.left = cursor2X + 'px';
+            cursor2.style.top = cursor2Y + 'px';
+            
+            requestAnimationFrame(animateCursor);
+        }
+
+        animateCursor();
     }
 
-    // Glitch Text Effects - Lighter on mobile
+    // Glitch Text Effects - OPTIMIZED
     initGlitchEffects() {
         const glitchElements = document.querySelectorAll('.title-highlight, .logo-text');
-
-        // Reduce intensity on mobile
-        const glitchFrequency = window.innerWidth <= 768 ? 0.98 : 0.95;
+        
+        if (glitchElements.length === 0) return;
 
         glitchElements.forEach(element => {
             const originalText = element.textContent;
+            let glitchInterval;
             
-            setInterval(() => {
-                if (Math.random() > glitchFrequency) {
+            // Store original text in data attribute
+            element.dataset.originalText = originalText;
+            
+            // Less frequent glitches on mobile
+            const interval = this.isMobile ? 3000 : 1500;
+            
+            glitchInterval = setInterval(() => {
+                if (Math.random() > 0.9) {
                     const glitchText = originalText.split('').map(char => 
-                        Math.random() > 0.9 ? String.fromCharCode(33 + Math.random() * 94) : char
+                        Math.random() > 0.8 ? getRandomChar() : char
                     ).join('');
                     
                     element.textContent = glitchText;
                     
                     setTimeout(() => {
                         element.textContent = originalText;
-                    }, window.innerWidth <= 768 ? 50 : 100); // Shorter on mobile
+                    }, this.isMobile ? 30 : 50);
                 }
-            }, window.innerWidth <= 768 ? 2000 : 1000); // Less frequent on mobile
+            }, interval);
+            
+            // Store interval for cleanup
+            element.dataset.glitchInterval = glitchInterval;
         });
     }
 
     // Touch device optimizations
     initTouchOptimizations() {
-        if ('ontouchstart' in window || navigator.maxTouchPoints) {
-            // Add touch-specific classes
-            document.body.classList.add('touch-device');
-            
-            // Improve touch scrolling
-            document.documentElement.style.touchAction = 'manipulation';
-            
-            // Add active states for touch
-            document.querySelectorAll('.cyber-btn, .nav-item, .matrix-cell').forEach(element => {
-                element.addEventListener('touchstart', () => {
-                    element.classList.add('active-touch');
-                });
-                
-                element.addEventListener('touchend', () => {
-                    element.classList.remove('active-touch');
-                });
+        if (!this.isTouchDevice) return;
+
+        document.body.classList.add('touch-device');
+        
+        // Improve touch scrolling
+        document.documentElement.style.touchAction = 'pan-y';
+        
+        // Add touch feedback
+        document.querySelectorAll('.cyber-btn, .nav-item, .matrix-cell').forEach(element => {
+            element.addEventListener('touchstart', () => {
+                element.classList.add('touch-active');
             });
             
-            // Prevent zoom on double-tap
-            let lastTouchEnd = 0;
-            document.addEventListener('touchend', (e) => {
-                const now = Date.now();
-                if (now - lastTouchEnd <= 300) {
-                    e.preventDefault();
-                }
-                lastTouchEnd = now;
-            }, { passive: false });
+            element.addEventListener('touchend', () => {
+                element.classList.remove('touch-active');
+            });
             
-            // Improve button sizes for touch
-            const style = document.createElement('style');
-            style.textContent = `
-                .touch-device .cyber-btn,
-                .touch-device .nav-item {
-                    min-height: 44px;
-                    min-width: 44px;
+            element.addEventListener('touchcancel', () => {
+                element.classList.remove('touch-active');
+            });
+        });
+        
+        // Prevent zoom on double-tap
+        let lastTouchEnd = 0;
+        document.addEventListener('touchend', (e) => {
+            const now = Date.now();
+            if (now - lastTouchEnd <= 300) {
+                e.preventDefault();
+            }
+            lastTouchEnd = now;
+        }, { passive: false });
+        
+        // Add touch-specific styles
+        const style = document.createElement('style');
+        style.textContent = `
+            .touch-device .cyber-btn,
+            .touch-device .nav-item {
+                min-height: 44px;
+                min-width: 44px;
+                cursor: pointer;
+            }
+            
+            .touch-device .form-input,
+            .touch-device .form-textarea {
+                font-size: 16px !important;
+            }
+            
+            .touch-active {
+                transform: scale(0.95);
+                transition: transform 0.1s ease-out;
+            }
+            
+            /* Remove hover effects on touch */
+            .touch-device *:hover {
+                transform: none !important;
+            }
+            
+            /* Better scrolling on iOS */
+            .touch-device {
+                -webkit-overflow-scrolling: touch;
+            }
+        `;
+        document.head.appendChild(style);
+    }
+
+    // Smooth scrolling
+    initSmoothScrolling() {
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                const targetId = this.getAttribute('href');
+                if (targetId === '#' || targetId === '#!') {
+                    e.preventDefault();
+                    return;
                 }
                 
-                .touch-device .form-input,
-                .touch-device .form-textarea {
-                    font-size: 16px !important;
+                const targetElement = document.querySelector(targetId);
+                if (targetElement) {
+                    e.preventDefault();
+                    
+                    const headerHeight = this.isMobile ? 70 : 100;
+                    const targetPosition = targetElement.getBoundingClientRect().top + 
+                                        window.pageYOffset - headerHeight;
+                    
+                    window.scrollTo({
+                        top: targetPosition,
+                        behavior: 'smooth'
+                    });
+                    
+                    // Update URL without page jump
+                    history.pushState(null, null, targetId);
                 }
-                
-                .active-touch {
-                    transform: scale(0.95) !important;
-                    transition: transform 0.1s !important;
-                }
-                
-                /* Remove hover effects on touch */
-                .touch-device .nav-item:hover .nav-glow,
-                .touch-device .matrix-cell:hover .cell-glow,
-                .touch-device .tech-item:hover,
-                .touch-device .project-hologram:hover {
-                    transform: none !important;
-                }
+            });
+        });
+        
+        // Add scroll progress indicator for mobile
+        if (this.isMobile) {
+            const progressBar = document.createElement('div');
+            progressBar.className = 'cyber-scroll-progress';
+            progressBar.setAttribute('role', 'progressbar');
+            progressBar.setAttribute('aria-valuemin', '0');
+            progressBar.setAttribute('aria-valuemax', '100');
+            
+            progressBar.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 0%;
+                height: 3px;
+                background: linear-gradient(90deg, #00f3ff, #00ff41);
+                z-index: 9998;
+                transition: width 0.1s ease-out;
             `;
-            document.head.appendChild(style);
+            
+            document.body.appendChild(progressBar);
+            
+            function updateScrollProgress() {
+                const winScroll = document.documentElement.scrollTop;
+                const height = document.documentElement.scrollHeight - 
+                             document.documentElement.clientHeight;
+                const scrolled = (winScroll / height) * 100;
+                progressBar.style.width = scrolled + '%';
+                progressBar.setAttribute('aria-valuenow', Math.round(scrolled));
+            }
+            
+            window.addEventListener('scroll', updateScrollProgress);
+            updateScrollProgress();
         }
     }
 
-    // Performance optimizations for mobile
-    initPerformanceOptimizations() {
-        // Lazy loading for images
-        const images = document.querySelectorAll('img[data-src]');
-        const imageObserver = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    const img = entry.target;
-                    img.src = img.dataset.src;
-                    imageObserver.unobserve(img);
+    // Event Listeners
+    initEventListeners() {
+        // Handle page visibility changes
+        document.addEventListener('visibilitychange', () => {
+            if (document.hidden) {
+                // Pause heavy animations
+                if (this.matrixInterval) {
+                    cancelAnimationFrame(this.matrixInterval);
                 }
-            });
-        }, {
-            rootMargin: '50px 0px',
-            threshold: 0.1
+                if (this.animationFrame) {
+                    cancelAnimationFrame(this.animationFrame);
+                }
+            } else {
+                // Resume animations
+                this.initMatrixRain();
+            }
         });
         
-        images.forEach(img => imageObserver.observe(img));
-        
-        // Debounce resize events
-        let resizeTimer;
-        window.addEventListener('resize', () => {
-            clearTimeout(resizeTimer);
-            resizeTimer = setTimeout(() => {
-                this.handleResize();
-            }, 250);
+        // Handle beforeunload for cleanup
+        window.addEventListener('beforeunload', () => {
+            this.cleanup();
         });
-        
-        // Initialize loading state
-        this.showLoadingState();
     }
-
+    
+    // Cleanup method
+    cleanup() {
+        // Cancel animation frames
+        if (this.matrixInterval) {
+            cancelAnimationFrame(this.matrixInterval);
+        }
+        if (this.animationFrame) {
+            cancelAnimationFrame(this.animationFrame);
+        }
+        
+        // Clear intervals from glitch effects
+        document.querySelectorAll('[data-glitch-interval]').forEach(element => {
+            clearInterval(element.dataset.glitchInterval);
+        });
+        
+        // Remove event listeners
+        document.removeEventListener('visibilitychange', this.handleVisibilityChange);
+        window.removeEventListener('beforeunload', this.cleanup);
+    }
+    
+    // Handle resize
     handleResize() {
-        // Update mobile menu button visibility
+        this.isMobile = window.innerWidth <= 768;
+        this.isTablet = window.innerWidth <= 1024 && window.innerWidth > 768;
+        
+        // Update mobile menu button
         const mobileMenuBtn = document.getElementById('mobileMenuBtn');
         if (mobileMenuBtn) {
             mobileMenuBtn.style.display = window.innerWidth <= 1024 ? 'flex' : 'none';
@@ -861,132 +1271,66 @@ initMobileNavigation() {
         const heroHologram = document.querySelector('.hero-hologram');
         if (heroHologram) {
             if (window.innerWidth <= 480) {
-                heroHologram.style.height = '200px';
+                heroHologram.style.height = '180px';
             } else if (window.innerWidth <= 768) {
-                heroHologram.style.height = '250px';
+                heroHologram.style.height = '220px';
             } else if (window.innerWidth <= 1024) {
-                heroHologram.style.height = '350px';
+                heroHologram.style.height = '280px';
             } else {
                 heroHologram.style.height = '';
             }
         }
-        
-        // Re-initialize 3D if needed
-        const neuralCanvas = document.getElementById('neuralNetwork');
-        if (neuralCanvas) {
-            if (window.innerWidth > 768 && neuralCanvas.style.display === 'none') {
-                this.initNeuralNetwork();
-            }
-        }
     }
+}
 
-    showLoadingState() {
-        // Create loading screen
-        const loadingScreen = document.createElement('div');
-        loadingScreen.className = 'loading-screen';
-        loadingScreen.innerHTML = `
-            <div class="loading-logo">
-                <span style="color: #00f3ff; font-family: Orbitron; font-size: 2rem;">SILVA</span>
-                <span style="color: #00ff41; font-family: Rajdhani; font-size: 1rem;">LOADING SYSTEMS...</span>
-            </div>
-            <div class="loading-bar">
-                <div class="loading-progress"></div>
-            </div>
-        `;
-        
-        loadingScreen.style.cssText = `
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: #0a0a0a;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            z-index: 9999;
-            transition: opacity 0.5s ease-out;
-        `;
-        
-        document.body.appendChild(loadingScreen);
-        
-        // Remove loading screen after content loads
-        window.addEventListener('load', () => {
-            setTimeout(() => {
-                loadingScreen.style.opacity = '0';
-                setTimeout(() => {
-                    loadingScreen.remove();
-                }, 500);
-            }, 1000);
-        });
-        
-        // Fallback in case load event doesn't fire
-        setTimeout(() => {
-            loadingScreen.style.opacity = '0';
-            setTimeout(() => {
-                loadingScreen.remove();
-            }, 500);
-        }, 3000);
-    }
+// Utility functions
+function getRandomNeonColor() {
+    const colors = ['#00f3ff', '#ff00ff', '#00ff9d', '#9d00ff', '#ffd300', '#00ff41'];
+    return colors[Math.floor(Math.random() * colors.length)];
+}
 
-    // Smooth scrolling
-    initSmoothScrolling() {
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function(e) {
-                e.preventDefault();
-                
-                const targetId = this.getAttribute('href');
-                if (targetId === '#') return;
-                
-                const targetElement = document.querySelector(targetId);
-                if (targetElement) {
-                    const headerHeight = window.innerWidth <= 768 ? 70 : 100;
-                    const targetPosition = targetElement.offsetTop - headerHeight;
-                    
-                    window.scrollTo({
-                        top: targetPosition,
-                        behavior: 'smooth'
-                    });
-                }
-            });
-        });
-        
-        // Add scroll progress indicator for mobile
-        if (window.innerWidth <= 768) {
-            const progressBar = document.createElement('div');
-            progressBar.className = 'scroll-progress';
-            progressBar.style.cssText = `
-                position: fixed;
-                top: 0;
-                left: 0;
-                width: 0%;
-                height: 3px;
-                background: linear-gradient(90deg, #00f3ff, #00ff41);
-                z-index: 1000;
-                transition: width 0.1s;
-            `;
-            document.body.appendChild(progressBar);
-            
-            window.addEventListener('scroll', () => {
-                const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
-                const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
-                const scrolled = (winScroll / height) * 100;
-                progressBar.style.width = scrolled + '%';
-            });
-        }
-    }
+function getRandomChar() {
+    const chars = "!@#$%^&*()_+-=[]{}|;:,.<>?~";
+    return chars[Math.floor(Math.random() * chars.length)];
 }
 
 // Initialize when DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
-    // Check if THREE.js is loaded
-    if (typeof THREE === 'undefined') {
-        console.warn('THREE.js not loaded. Neural network will not initialize.');
+    // Check for reduced motion preference
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    
+    if (prefersReducedMotion) {
+        document.body.classList.add('reduced-motion');
+        console.log('Reduced motion preference detected - animations reduced');
     }
-
-    const portfolio = new CyberPortfolio();
-
+    
+    // Initialize portfolio
+    let portfolio;
+    try {
+        portfolio = new CyberPortfolio();
+        
+        // Store reference for debugging
+        window.cyberPortfolio = portfolio;
+    } catch (error) {
+        console.error('Failed to initialize CyberPortfolio:', error);
+        // Fallback: show error message to user
+        const errorMsg = document.createElement('div');
+        errorMsg.style.cssText = `
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: #ff0033;
+            color: white;
+            padding: 10px;
+            text-align: center;
+            z-index: 99999;
+            font-family: sans-serif;
+        `;
+        errorMsg.textContent = 'Error loading portfolio. Please refresh the page.';
+        document.body.appendChild(errorMsg);
+    }
+    
     // Update current time in footer
     function updateTime() {
         const now = new Date();
@@ -1005,100 +1349,154 @@ document.addEventListener('DOMContentLoaded', () => {
         
         const timeElement = document.getElementById('currentTime');
         if (timeElement) {
-            timeElement.textContent = `${dateString} ${timeString}`;
+            timeElement.textContent = `${dateString} | ${timeString}`;
         }
     }
-
-    setInterval(updateTime, 1000);
+    
+    // Update time every second
+    const timeInterval = setInterval(updateTime, 1000);
     updateTime();
-
-    // Add active navigation based on scroll position
+    
+    // Active navigation based on scroll position
     function updateActiveNav() {
         const sections = document.querySelectorAll('section[id]');
         const navLinks = document.querySelectorAll('.nav-item');
         
         let current = '';
+        const scrollPosition = window.scrollY + 100;
+        
         sections.forEach(section => {
             const sectionTop = section.offsetTop;
             const sectionHeight = section.clientHeight;
-            if (scrollY >= sectionTop - 150) {
+            
+            if (scrollPosition >= sectionTop && 
+                scrollPosition < sectionTop + sectionHeight) {
                 current = section.getAttribute('id');
             }
         });
         
         navLinks.forEach(link => {
             link.classList.remove('active');
-            if (link.getAttribute('href') === `#${current}`) {
+            const href = link.getAttribute('href');
+            if (href === `#${current}`) {
                 link.classList.add('active');
             }
         });
     }
     
-    window.addEventListener('scroll', updateActiveNav);
-    updateActiveNav(); // Initial call
+    // Debounced scroll handler
+    let scrollTimeout;
+    window.addEventListener('scroll', () => {
+        clearTimeout(scrollTimeout);
+        scrollTimeout = setTimeout(updateActiveNav, 50);
+    });
+    
+    // Initial call
+    updateActiveNav();
+    
+    // Handle orientation changes
+    window.addEventListener('orientationchange', () => {
+        // Wait for orientation to settle
+        setTimeout(() => {
+            window.location.reload();
+        }, 500);
+    });
+    
+    // Service Worker for PWA (optional)
+    if ('serviceWorker' in navigator && window.location.protocol === 'https:') {
+        window.addEventListener('load', () => {
+            navigator.serviceWorker.register('/sw.js')
+                .then(registration => {
+                    console.log('ServiceWorker registration successful');
+                })
+                .catch(error => {
+                    console.log('ServiceWorker registration failed:', error);
+                });
+        });
+    }
+    
+    // Clean up on page unload
+    window.addEventListener('unload', () => {
+        if (portfolio && typeof portfolio.cleanup === 'function') {
+            portfolio.cleanup();
+        }
+        clearInterval(timeInterval);
+    });
 });
 
-// Utility function
-function getRandomColor() {
-    const colors = ['#00f3ff', '#ff00ff', '#00ff9d', '#9d00ff', '#ffd300', '#00ff41'];
-    return colors[Math.floor(Math.random() * colors.length)];
-}
-
-// Add missing CSS animations if not already defined
-if (!document.querySelector('#cyber-animations')) {
-    const additionalStyles = document.createElement('style');
-    additionalStyles.id = 'cyber-animations';
-    additionalStyles.textContent = `
-        @keyframes matrixGlitch {
-            0% { transform: translateX(0); }
-            20% { transform: translateX(-5px); }
-            40% { transform: translateX(5px); }
-            60% { transform: translateX(-5px); }
-            80% { transform: translateX(5px); }
-            100% { transform: translateX(0); }
+// Add missing CSS if not already defined
+if (!document.querySelector('#cyber-portfolio-styles')) {
+    const styles = document.createElement('style');
+    styles.id = 'cyber-portfolio-styles';
+    styles.textContent = `
+        /* Cyber Portfolio Styles */
+        
+        @keyframes cyberGlitch {
+            0% { transform: translate(0); }
+            20% { transform: translate(-2px, 2px); }
+            40% { transform: translate(-2px, -2px); }
+            60% { transform: translate(2px, 2px); }
+            80% { transform: translate(2px, -2px); }
+            100% { transform: translate(0); }
         }
         
+        @keyframes cyberPulse {
+            0% { box-shadow: 0 0 0 0 rgba(0, 243, 255, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(0, 243, 255, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(0, 243, 255, 0); }
+        }
+        
+        /* Themes */
         .cyber-theme {
-            --neon-blue: #00f3ff;
-            --neon-pink: #ff00ff;
-            --neon-green: #00ff9d;
-            --neon-purple: #9d00ff;
+            --primary: #00f3ff;
+            --secondary: #ff00ff;
+            --accent: #00ff9d;
+            --background: #0a0a0a;
         }
         
         .matrix-theme {
-            --neon-blue: #00ff41;
-            --neon-pink: #00ff41;
-            --neon-green: #00ff41;
-            --neon-purple: #00ff41;
+            --primary: #00ff41;
+            --secondary: #00ff41;
+            --accent: #00ff41;
+            --background: #000000;
         }
         
         .neon-theme {
-            --neon-blue: #ff00ff;
-            --neon-pink: #00f3ff;
-            --neon-green: #ffd300;
-            --neon-purple: #ff00ff;
+            --primary: #ff00ff;
+            --secondary: #00f3ff;
+            --accent: #ffd300;
+            --background: #111111;
         }
         
-        /* Active state for navigation */
+        /* Active navigation */
         .nav-item.active {
-            background: rgba(0, 243, 255, 0.2) !important;
-            box-shadow: 0 0 20px rgba(0, 243, 255, 0.5) !important;
+            background: linear-gradient(45deg, transparent, var(--primary, #00f3ff), transparent) !important;
+            box-shadow: 0 0 20px var(--primary, #00f3ff) !important;
         }
         
-        .nav-item.active .nav-glow {
-            box-shadow: 0 0 30px rgba(0, 243, 255, 0.8) !important;
-            opacity: 1 !important;
+        /* Loading states */
+        .cyber-btn.loading {
+            opacity: 0.7;
+            cursor: not-allowed;
+        }
+        
+        .cyber-btn.success {
+            background: linear-gradient(45deg, #00ff41, #00f3ff) !important;
+        }
+        
+        .cyber-btn.error {
+            background: linear-gradient(45deg, #ff0033, #ff0066) !important;
         }
         
         /* Mobile optimizations */
         @media (max-width: 768px) {
-            .hologram-nav {
-                display: none;
+            .hologram-nav:not(.active) {
+                display: none !important;
             }
             
             .hologram-nav.active {
-                display: flex;
-                animation: slideInRight 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+                display: flex !important;
+                animation: slideInRight 0.3s ease-out;
             }
             
             @keyframes slideInRight {
@@ -1113,78 +1511,44 @@ if (!document.querySelector('#cyber-animations')) {
             }
             
             /* Disable heavy animations on mobile */
-            .logo-pulse,
-            .hologram-grid,
-            .scan-pulse {
-                display: none;
-            }
-            
-            /* Improve touch targets */
-            button, 
-            .cyber-btn,
-            .nav-item {
-                min-height: 44px !important;
-                min-width: 44px !important;
-            }
-            
-            /* Prevent text selection on interactive elements */
-            .cyber-btn,
-            .nav-item,
-            .matrix-cell {
-                user-select: none;
-                -webkit-user-select: none;
-                -webkit-tap-highlight-color: transparent;
-            }
-        }
-        
-        /* Loading animations */
-        .loading-bar {
-            width: 200px;
-            height: 4px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 2px;
-            overflow: hidden;
-            margin-top: 20px;
-        }
-        
-        .loading-progress {
-            height: 100%;
-            width: 0;
-            background: linear-gradient(90deg, #00f3ff, #00ff41);
-            animation: loading 2s ease-in-out forwards;
-        }
-        
-        @keyframes loading {
-            0% { width: 0; }
-            100% { width: 100%; }
-        }
-        
-        /* Reduced motion */
-        @media (prefers-reduced-motion: reduce) {
-            *,
-            *::before,
-            *::after {
+            .reduced-motion *,
+            .reduced-motion *::before,
+            .reduced-motion *::after {
                 animation-duration: 0.01ms !important;
                 animation-iteration-count: 1 !important;
                 transition-duration: 0.01ms !important;
+                scroll-behavior: auto !important;
             }
         }
+        
+        /* Form validation */
+        .form-input.error,
+        .form-textarea.error {
+            border-color: #ff0033 !important;
+            box-shadow: 0 0 10px rgba(255, 0, 51, 0.5) !important;
+        }
+        
+        .form-input.valid,
+        .form-textarea.valid {
+            border-color: #00ff41 !important;
+            box-shadow: 0 0 10px rgba(0, 255, 65, 0.3) !important;
+        }
+        
+        /* Accessibility */
+        @media (prefers-reduced-motion: reduce) {
+            * {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+                scroll-behavior: auto !important;
+            }
+        }
+        
+        /* Focus styles for accessibility */
+        *:focus-visible {
+            outline: 2px solid var(--primary, #00f3ff) !important;
+            outline-offset: 2px !important;
+        }
     `;
-    document.head.appendChild(additionalStyles);
-}
-
-// Handle orientation changes
-window.addEventListener('orientationchange', () => {
-    setTimeout(() => {
-        window.location.reload();
-    }, 100);
-});
-
-// Service Worker for offline capability (optional)
-if ('serviceWorker' in navigator && window.location.protocol === 'https:') {
-    window.addEventListener('load', () => {
-        navigator.serviceWorker.register('/sw.js').catch(error => {
-            console.log('Service Worker registration failed:', error);
-        });
-    });
+    document.head.appendChild(styles);
 }

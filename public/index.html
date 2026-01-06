@@ -36,7 +36,7 @@
                 <!-- Navigation -->
                 <nav class="hologram-nav" id="hologramNav">
                     <div class="nav-grid">
-                        <a href="#hero" class="nav-item">
+                        <a href="#home" class="nav-item">
                             <i class='bx bx-home-alt'></i>
                             <span class="nav-label">HOME</span>
                         </a>
@@ -83,124 +83,188 @@
             <div class="scan-line"></div>
         </header>
         
-        <!-- HERO SECTION -->
-        <section class="cyber-hero" id="hero">
-            <div class="hero-content">
-                <!-- Animated Typing Text -->
-                <div class="hero-terminal">
-    <div class="terminal-header">
-        <div class="terminal-dots">
-            <span></span>
-            <span></span>
-            <span></span>
+      <section class="cyber-hero" id="home">
+    <!-- Data Stream Background -->
+    <div class="data-stream-bg"></div>
+    
+    <!-- Matrix Rain Canvas -->
+    <canvas id="matrixCanvas"></canvas>
+    
+    <div class="hero-grid">
+        <!-- Left Panel - Console Interface -->
+        <div class="console-panel">
+            <div class="system-header">
+                <div class="system-id">
+                    <div class="id-badge">SYS</div>
+                    <div class="id-text">
+                        <h3>SYSTEM_ALPHA</h3>
+                        <p>v2.0.1 | Access: ROOT</p>
+                    </div>
+                </div>
+                
+                <h1 class="console-title">
+                    <span class="title-line">SOFTWARE</span>
+                    <span class="title-line title-gradient">DEVELOPER</span>
+                    <span class="title-line"></span>
+                </h1>
+                
+                <p class="console-subtitle">FULL-STACK INNOVATION ENGINE</p>
+            </div>
+            
+            <!-- Live Terminal -->
+            <div class="live-terminal">
+                <div class="terminal-header">
+                    <div class="terminal-title">
+                        <i class="fas fa-terminal"></i>
+                        <span>SYSTEM MONITOR</span>
+                    </div>
+                    <div class="terminal-status">
+                        <div class="pulse-dot"></div>
+                        <span style="color: #00ff00; font-family: 'Courier New';">LIVE</span>
+                    </div>
+                </div>
+                
+                <div class="terminal-output">
+                    <div class="output-line">
+                        <span class="line-prefix">$> INIT:</span>
+                        <span class="line-content">Loading <span class="highlight">PORTFOLIO_INTERFACE</span>...</span>
+                    </div>
+                    <div class="output-line">
+                        <span class="line-prefix">$> STATUS:</span>
+                        <span class="line-content">Systems <span class="highlight">ONLINE</span> | Neural link: ACTIVE</span>
+                    </div>
+                    <div class="output-line">
+                        <span class="line-prefix">$> SCAN:</span>
+                        <span class="line-content">Detecting <span class="highlight">INNOVATION_PATTERNS</span>...</span>
+                    </div>
+                    <div class="output-line">
+                        <span class="line-prefix">$> READY:</span>
+                        <span class="line-content">Awaiting <span class="highlight">USER_INPUT</span>...</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Stats Dashboard -->
+            <div class="stats-dashboard">
+                <div class="stat-panel">
+                    <div class="stat-header">
+                        <i class="fas fa-code stat-icon"></i>
+                        <h4>PROJECTS DEPLOYED</h4>
+                    </div>
+                    <div class="stat-value" data-count="150">150</div>
+                </div>
+                
+                <div class="stat-panel">
+                    <div class="stat-header">
+                        <i class="fas fa-bolt stat-icon"></i>
+                        <h4>SYSTEM UPTIME</h4>
+                    </div>
+                    <div class="stat-value">99.9%</div>
+                </div>
+                
+                <div class="stat-panel">
+                    <div class="stat-header">
+                        <i class="fas fa-brain stat-icon"></i>
+                        <h4>AI INTEGRATION</h4>
+                    </div>
+                    <div class="stat-value">LEVEL 4</div>
+                </div>
+                
+                <div class="stat-panel">
+                    <div class="stat-header">
+                        <i class="fas fa-rocket stat-icon"></i>
+                        <h4>INNOVATION SCORE</h4>
+                    </div>
+                    <div class="stat-value">A+</div>
+                </div>
+            </div>
+            
+            <!-- Console Actions -->
+            <div class="console-actions">
+                <button class="cyber-action primary">
+                    <i class="fas fa-play"></i>
+                    <span>INITIATE SYSTEMS</span>
+                </button>
+                <button class="cyber-action">
+                    <i class="fas fa-download"></i>
+                    <span>DOWNLOAD PROFILE</span>
+                </button>
+            </div>
         </div>
-        <span class="terminal-title">silva@portfolio:~</span>
+        
+        <!-- Right Panel - Holographic Display -->
+        <div class="hologram-panel">
+            <!-- Data Stream Overlay -->
+            <div class="data-stream-overlay">
+                <div class="data-stream-line"></div>
+                <div class="data-stream-line"></div>
+                <div class="data-stream-line"></div>
+                <div class="data-stream-line"></div>
+            </div>
+            
+            <div class="hologram-container">
+                <div class="hologram-cube">
+                    <!-- Front Face -->
+                    <div class="cube-face">
+                        <div class="cube-content">
+                            <i class="fas fa-code face-icon"></i>
+                            <h3 class="face-title">CODE</h3>
+                            <p class="face-description">Advanced Development Systems</p>
+                        </div>
+                    </div>
+                    <!-- Right Face -->
+                    <div class="cube-face">
+                        <div class="cube-content">
+                            <i class="fas fa-palette face-icon"></i>
+                            <h3 class="face-title">DESIGN</h3>
+                            <p class="face-description">Cyberpunk UI/UX</p>
+                        </div>
+                    </div>
+                    <!-- Back Face -->
+                    <div class="cube-face">
+                        <div class="cube-content">
+                            <i class="fas fa-brain face-icon"></i>
+                            <h3 class="face-title">AI</h3>
+                            <p class="face-description">Neural Integration</p>
+                        </div>
+                    </div>
+                    <!-- Left Face -->
+                    <div class="cube-face">
+                        <div class="cube-content">
+                            <i class="fas fa-server face-icon"></i>
+                            <h3 class="face-title">SYSTEMS</h3>
+                            <p class="face-description">Infrastructure</p>
+                        </div>
+                    </div>
+                    <!-- Top Face -->
+                    <div class="cube-face">
+                        <div class="cube-content">
+                            <i class="fas fa-rocket face-icon"></i>
+                            <h3 class="face-title">INNOVATE</h3>
+                            <p class="face-description">Future Technology</p>
+                        </div>
+                    </div>
+                    <!-- Bottom Face -->
+                    <div class="cube-face">
+                        <div class="cube-content">
+                            <i class="fas fa-shield-alt face-icon"></i>
+                            <h3 class="face-title">SECURE</h3>
+                            <p class="face-description">Cyber Protection</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Navigation Dots -->
+            <div class="nav-dots">
+                <div class="nav-dot active"></div>
+                <div class="nav-dot"></div>
+                <div class="nav-dot"></div>
+                <div class="nav-dot"></div>
+            </div>
+        </div>
     </div>
-    <div class="terminal-body">
-        <div class="terminal-line">
-            <span class="prompt">$</span>
-            <span class="command">whois silva --show-photo</span>
-        </div>
-        
-        <!-- Terminal Image Display -->
-        <div class="terminal-image-display">
-            <div class="matrix-scanner"></div>
-            <div class="image-frame">
-                <!-- Actual image with glitch effect -->
-                <div class="glitch-image">
-                    <img src="img/new me.jpg" alt="Silva Ola" class="terminal-img">
-                    <div class="glitch-overlay"></div>
-                    <div class="scan-line-vertical"></div>
-                    <div class="pixel-grid"></div>
-                </div>
-                
-                <!-- Image metadata in terminal style -->
-                <div class="image-metadata">
-                    <div class="metadata-line">
-                        <span class="data-key">NAME:</span>
-                        <span class="data-value">SILVA_OLA</span>
-                    </div>
-                    <div class="metadata-line">
-                        <span class="data-key">SIZE:</span>
-                        <span class="data-value">2.4MB</span>
-                    </div>
-                    <div class="metadata-line">
-                        <span class="data-key">TYPE:</span>
-                        <span class="data-value">CYBER_DEV_PORTRAIT</span>
-                    </div>
-                    <div class="metadata-line">
-                        <span class="data-key">ACCESS:</span>
-                        <span class="data-value active">GRANTED</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-        
-        <div class="terminal-line">
-            <span class="prompt">$</span>
-            <span class="command">display_profile</span>
-        </div>
-        
-        <div class="terminal-output">
-            <h1 class="hero-title">
-                <span class="title-line">IDENTITY CONFIRMED:</span>
-                <span class="title-highlight">SILVA OLA</span>
-            </h1>
-            <div class="typing-container">
-                <span class="typing-text" id="typingText"></span>
-                <span class="cursor">|</span>
-            </div>
-        </div>
-        
-        <div class="terminal-line">
-            <span class="prompt">$</span>
-            <span class="command">cat bio.txt</span>
-        </div>
-        <div class="terminal-output">
-            <p class="hero-description">
-                Full-Stack Developer & AI Specialist crafting digital experiences 
-                with cutting-edge technology. Transforming ideas into interactive 
-                reality through code, creativity, and innovation.
-            </p>
-        </div>
-    </div>
-</div>
-                
-                <!-- Hero Stats -->
-                <div class="hero-stats">
-                    <div class="stat-card">
-                        <div class="stat-number" data-count="150">0</div>
-                        <div class="stat-label">PROJECTS</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-number" data-count="5">0</div>
-                        <div class="stat-label">YEARS EXP</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-number" data-count="25">0</div>
-                        <div class="stat-label">TECH STACK</div>
-                    </div>
-                </div>
-                
-                <!-- CTA Buttons -->
-                <div class="hero-cta">
-                    <a href="#projects" class="cyber-btn primary-btn">
-                        <i class='bx bx-rocket'></i>
-                        <span>VIEW PROJECTS</span>
-                    </a>
-                    <a href="#contact" class="cyber-btn outline-btn">
-                        <i class='bx bx-chat'></i>
-                        <span>HIRE ME</span>
-                    </a>
-                </div>
-                
-                <!-- Scroll Indicator -->
-                <div class="scroll-indicator">
-                    <span>SCROLL TO EXPLORE</span>
-                    <i class='bx bx-chevron-down'></i>
-                </div>
-            </div>
-        </section>
+</section>
         
         <!-- ABOUT SECTION -->
         <section class="cyber-about" id="about">
@@ -544,7 +608,6 @@
                 
                 <div class="footer-copyright">
                     <p>&copy; Silva Ola. All rights reserved.</p>
-                    <p>Built with ❤️ and built in Nigeria</p>
                 </div>
             </div>
         </footer>

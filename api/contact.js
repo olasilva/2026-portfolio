@@ -1,3 +1,4 @@
+// api/contact.js
 import nodemailer from 'nodemailer';
 
 export default async function handler(req, res) {
@@ -5,156 +6,127 @@ export default async function handler(req, res) {
     if (req.method !== 'POST') {
         return res.status(405).json({ 
             success: false, 
-            error: 'Method not allowed' 
+            message: 'Method not allowed' 
         });
     }
 
     try {
-        const { name, email, phone, subject, message } = req.body;
+        const { name, email, subject, message } = req.body;
+        
+        console.log('📩 Contact form submission received:', { name, email });
         
         // Validate required fields
         if (!name || !email || !message) {
             return res.status(400).json({
                 success: false,
-                error: 'Name, email, and message are required'
+                message: 'Name, email, and message are required'
             });
         }
         
-        // Validate email format
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (!emailRegex.test(email)) {
-            return res.status(400).json({
-                success: false,
-                error: 'Invalid email format'
-            });
-        }
-        
-        // Sanitize inputs
-        const sanitize = (input) => {
-            if (typeof input !== 'string') return input;
-            return input.trim().replace(/[<>]/g, '').substring(0, 1000);
-        };
-        
-        const contactData = {
-            name: sanitize(name),
-            email: sanitize(email),
-            phone: sanitize(phone) || 'Not provided',
-            subject: sanitize(subject) || 'Portfolio Inquiry',
-            message: sanitize(message)
-        };
-        
-        console.log('📧 Contact submission:', contactData);
-        
-        // Check if email credentials are configured
-        if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
-            console.log('⚠️ Email not configured on Vercel');
+        // Check if we have Mailtrap credentials
+        if (!process.env.EMAIL_HOST || !process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
+            console.log('⚠️ Mailtrap not configured - logging contact only');
+            console.log('Contact details:', { name, email, subject, message });
+            
             return res.json({
                 success: true,
-                message: 'Message received! (Email simulation mode)',
+                message: 'Message received! (Email service not configured)',
                 data: {
                     id: `MSG-${Date.now()}`,
-                    name: contactData.name,
-                    email: contactData.email,
+                    name,
+                    email,
                     timestamp: new Date().toISOString()
                 }
             });
         }
         
-        // Configure email transporter for Vercel
+        // Create transporter with Mailtrap
         const transporter = nodemailer.createTransport({
-            service: 'gmail',
+            host: process.env.EMAIL_HOST,
+            port: process.env.EMAIL_PORT || 2525,
             auth: {
                 user: process.env.EMAIL_USER,
                 pass: process.env.EMAIL_PASS
             }
         });
         
-        // Email to admin (you)
-        const adminEmail = {
-            from: process.env.EMAIL_USER,
-            to: process.env.ADMIN_EMAIL || process.env.EMAIL_USER,
-            subject: `🚀 New Portfolio Contact: ${contactData.name}`,
-            html: `
-                <div style="font-family: 'Courier New', monospace; background: #0a0a0a; color: #00ff41; padding: 20px;">
-                    <div style="max-width: 600px; margin: 0 auto; background: #111; border-radius: 10px; padding: 30px; border: 1px solid #00f3ff;">
-                        <h2 style="color: #00f3ff; text-align: center;">📡 NEW CONTACT SUBMISSION</h2>
-                        <div style="margin: 20px 0; padding: 15px; background: #1a1a1a; border-radius: 5px;">
-                            <p><strong>Name:</strong> ${contactData.name}</p>
-                            <p><strong>Email:</strong> ${contactData.email}</p>
-                            <p><strong>Phone:</strong> ${contactData.phone}</p>
-                            <p><strong>Subject:</strong> ${contactData.subject}</p>
-                        </div>
-                        <div style="background: #222; padding: 15px; border-radius: 5px;">
-                            <p><strong>Message:</strong></p>
-                            <p>${contactData.message}</p>
-                        </div>
-                        <p style="text-align: center; margin-top: 20px; color: #666;">
-                            Received from your portfolio at ${new Date().toLocaleString()}
-                        </p>
-                    </div>
-                </div>
-            `
-        };
+        // Verify connection first
+        await transporter.verify();
+        console.log('✅ Mailtrap connection verified');
         
-        // Confirmation email to user
-        const userEmail = {
-            from: process.env.EMAIL_USER,
-            to: contactData.email,
-            subject: '✅ Message Received - Silva Ola Portfolio',
+        // Email to admin (you)
+        const adminMail = {
+            from: `"Portfolio Contact" <${process.env.EMAIL_USER}>`,
+            to: process.env.ADMIN_EMAIL || process.env.EMAIL_USER,
+            replyTo: email,
+            subject: `📬 New Message: ${name} - ${subject || 'Portfolio Inquiry'}`,
             html: `
                 <div style="font-family: 'Courier New', monospace; background: #0a0a0a; color: #fff; padding: 20px;">
-                    <div style="max-width: 600px; margin: 0 auto; background: #111; border-radius: 10px; padding: 30px; border: 1px solid #00ff41;">
-                        <h2 style="color: #00ff41; text-align: center;">✅ MESSAGE RECEIVED</h2>
-                        <p style="text-align: center; color: #aaa;">Thank you for contacting Silva Ola!</p>
+                    <div style="max-width: 600px; margin: 0 auto; background: #111; padding: 30px; border-radius: 10px; border: 2px solid #00f3ff;">
+                        <h2 style="color: #00f3ff; text-align: center; border-bottom: 1px solid #00f3ff; padding-bottom: 10px;">
+                            📡 NEW PORTFOLIO CONTACT
+                        </h2>
                         
                         <div style="margin: 20px 0; padding: 15px; background: #1a1a1a; border-radius: 5px;">
-                            <p><strong>Message ID:</strong> MSG-${Date.now()}</p>
-                            <p><strong>Date:</strong> ${new Date().toLocaleString()}</p>
+                            <p><strong>👤 Name:</strong> ${name}</p>
+                            <p><strong>📧 Email:</strong> ${email}</p>
+                            <p><strong>📋 Subject:</strong> ${subject || 'No subject'}</p>
+                            <p><strong>🕐 Time:</strong> ${new Date().toLocaleString()}</p>
                         </div>
                         
-                        <p>Hi ${contactData.name},</p>
-                        <p>Your message has been received successfully. I'll review it and get back to you as soon as possible.</p>
-                        
-                        <div style="text-align: center; margin: 25px 0;">
-                            <a href="${process.env.VERCEL_URL || 'https://your-portfolio.vercel.app'}" 
-                               style="background: linear-gradient(45deg, #00f3ff, #00ff9d); color: #000; padding: 12px 30px; text-decoration: none; border-radius: 5px; font-weight: bold;">
-                                VISIT PORTFOLIO
-                            </a>
+                        <div style="background: #222; padding: 15px; border-radius: 5px; margin: 20px 0;">
+                            <p><strong>💬 Message:</strong></p>
+                            <p style="white-space: pre-line; line-height: 1.6;">${message}</p>
                         </div>
                         
-                        <p style="text-align: center; color: #666; font-size: 12px; margin-top: 30px;">
-                            This is an automated confirmation email. Please do not reply.
-                        </p>
+                        <div style="text-align: center; margin-top: 20px; color: #666; font-size: 12px;">
+                            <p>📨 Sent via Silva Portfolio Contact Form</p>
+                            <p>🔗 ${process.env.BASE_URL || 'http://localhost:3000'}</p>
+                        </div>
                     </div>
                 </div>
+            `,
+            text: `
+NEW CONTACT FORM SUBMISSION
+===========================
+Name: ${name}
+Email: ${email}
+Subject: ${subject || 'No subject'}
+Time: ${new Date().toLocaleString()}
+
+Message:
+${message}
+
+---
+Sent via Silva Portfolio Contact Form
             `
         };
         
-        // Send emails
-        await Promise.all([
-            transporter.sendMail(adminEmail),
-            transporter.sendMail(userEmail)
-        ]);
+        // Send email
+        const info = await transporter.sendMail(adminMail);
+        console.log('✅ Email sent to Mailtrap:', info.messageId);
         
-        console.log('✅ Emails sent successfully');
-        
+        // Success response
         return res.status(200).json({
             success: true,
-            message: 'Message sent successfully! Check your email for confirmation.',
+            message: 'Message sent successfully! I\'ll get back to you soon.',
             data: {
-                id: `MSG-${Date.now()}`,
-                name: contactData.name,
-                email: contactData.email,
+                id: info.messageId,
+                name,
+                email,
                 timestamp: new Date().toISOString()
             }
         });
         
     } catch (error) {
-        console.error('❌ Contact form error:', error);
+        console.error('❌ Email error:', error);
+        
+        // Log contact anyway for debugging
+        console.log('📝 Contact details (failed to send):', req.body);
         
         return res.status(500).json({
             success: false,
-            error: 'Failed to send message. Please try again later.',
+            message: 'Failed to send message. Please try again later.',
             debug: process.env.NODE_ENV === 'development' ? error.message : undefined
         });
     }
